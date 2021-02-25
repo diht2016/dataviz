@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Graph Test</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <script src="./js/graph.js"></script>
+    <script src="./js/svg-graph.js"></script>
+    <script>
+
+        function initRandom() {
+            let n = chance(0.7) ? rand(10) + 8 : rand(70) + 3
+            let p = chance(0.2) ? Math.sqrt(1/n) : Math.pow(1/n, (1 + Math.random()) / 2)
+
+            console.log(`n = ${n}, p = ${p.toFixed(3)}`)
+            clearSvg()
+            drawGraph(scattered(chance(0.8) ? randomGraph(n, p) : randomTree(n)))
+        }
+
+        initRandom()
+        let listener = (e) => {
+            initRandom()
+            e.preventDefault()
+            e.stopPropagation()
+        }
+        window.onkeydown = (e) => {
+            if (e.code == 'Space') listener();
+            console.log(e)
+        }
+        window.onmousedown = listener
+
+    </script>
+    <div id="overlay">
+        Click or press space to randomize
+    </div>
+</body>
+</html>
