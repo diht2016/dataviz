@@ -46,10 +46,10 @@ function setGraph(graph2d) {
     let elems = svg.children
     let i = 0
     graph2d.iterEdges((a, b) => {
-        setLine(elems[i++], graph2d.xy[a], graph2d.xy[b])
+        setLine(elems[i++], graph2d.coords[a], graph2d.coords[b])
     })
     graph2d.iterVertices(a => {
-        setPoint(elems[i++], graph2d.xy[a], scale)
+        setPoint(elems[i++], graph2d.coords[a], scale)
     })
 }
 

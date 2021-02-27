@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Relaxation</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="./images/favicon.png">
+</head>
+<body>
+    <script src="./js/graph.js"></script>
+    <script src="./js/svg-graph.js"></script>
+    <script>
+
+        let graph2d = null
+        let dist2d = xy => Math.sqrt(xy[0] ** 2 + xy[1] ** 2)
+        let diff2d = (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]]
+
+        function initRandom() {
+            graph2d = scatteredCircle(pickRandomGraph())
+            setGraph(graph2d)
+        }
+
+        // todo: make these settings editable from the page
+        let gCenter = 0.01
+        let gConnected = 0.01
+        let gCrowd = -1
+        let fCenter = (d, n) => gCenter * d**2
+        let fConnected = d => gConnected * d
+        let fCrowd = d => gCrowd / (0.01 + d**2)
+        let fNorm = d => d ** 0.7
+        let fScale = n => Math.sqrt(n) * 5
+
+        // todo: fix explosion on fully-connected graph
+
+        function relax() {
+            let scale = fScale(graph2d.n)
+            let newCoords = Array()
+            graph2d.iterVertices(a => {
+                let axy = graph2d.coords[a]
+                let diffCoords = graph2d.coords.map(xy => diff2d(xy, axy))
+                let dists = diffCoords.map(xy => dist2d(xy) * scale)
+                let nxy = [0, 0]
+                let add = (xy, k) => {
+                    nxy[0] += xy[0] * k
+                    nxy[1] += xy[1] * k
+                }
+                let centerDiff = axy.map(t => 1 - t * 2)
+                let centerDist = dist2d(centerDiff)
+                add(centerDiff, fCenter(centerDist) / centerDist)
+                diffCoords.forEach((xy, i) => {
+                    let d = dists[i]
+                    if (!d) return
+                    add(xy, fCrowd(d) / d)
+                    if (!graph2d.table[a][i]) return
+                    add(xy, fConnected(d) / d)
+                })
+                let deltaNorm = dist2d(nxy)
+                nxy = nxy.map(t => t * fNorm(deltaNorm * scale) / deltaNorm / scale)
+                add(axy, 1)
+                newCoords.push(nxy)
+            })
+            graph2d.coords = newCoords
+            setGraph(graph2d)
+        }
+
+        initRandom()
+        let listener = (e) => {
+            initRandom()
+            e.preventDefault()
+            e.stopPropagation()
+        }
+        window.onkeydown = (e) => {
+            if (e.code == 'Space') listener(e)
+            console.log(e)
+        }
+        window.onmousedown = listener
+
+        setInterval(relax, 20)
+
+    </script>
+    <div id="overlay">
+        Click or press space to randomize
+    </div>
+</body>
+</html>

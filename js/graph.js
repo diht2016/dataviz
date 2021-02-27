@@ -1,4 +1,5 @@
 let range = (n, f) => [...Array(n)].map((_, i) => (typeof f == 'function' ? f(i) : f))
+let sum = (arr) => arr.reduce((a, b) => a + b, 0)
 let clone = orig => Object.assign(Object.create(Object.getPrototypeOf(orig)), orig)
 
 class UndirectedGraph {
@@ -70,6 +71,16 @@ function pickRandomGraph() {
 
 function scattered(graph) {
     graph = clone(graph)
-    graph.xy = range(graph.n, _ => [Math.random(), Math.random()])
+    graph.coords = range(graph.n, _ => [Math.random(), Math.random()])
+    return graph
+}
+
+function scatteredCircle(graph) {
+    graph = clone(graph)
+    graph.coords = range(graph.n, _ => {
+        let phi = Math.random() * 2 * Math.PI
+        let r = Math.sqrt(Math.random()) * 0.5
+        return [0.5 + r * Math.cos(phi), 0.5 + r * Math.sin(phi)]
+    })
     return graph
 }
