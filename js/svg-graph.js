@@ -1,5 +1,5 @@
-let ns = 'http://www.w3.org/2000/svg'
-let svg = document.createElementNS(ns, 'svg')
+let svgNS = 'http://www.w3.org/2000/svg'
+let svg = document.createElementNS(svgNS, 'svg')
 
 let margin = 0.1
 
@@ -9,16 +9,22 @@ svg.setAttribute('stroke', '#ccc')
 svg.setAttribute('fill', '#fa0')
 document.body.appendChild(svg)
 
-function createPoint(xy, r) {
-    let e = document.createElementNS(ns, 'circle')
+function createSvgElem(tagName) {
+    let e = document.createElementNS(svgNS, tagName)
+    svg.appendChild(e)
+    return e
+}
+
+function setPoint(e, xy, r) {
+    if (!e) e = createSvgElem('circle')
     e.setAttribute('r', r)
     e.setAttribute('cx', xy[0])
     e.setAttribute('cy', xy[1])
     return e
 }
 
-function createLine(xy0, xy1) {
-    let e = document.createElementNS(ns, 'line')
+function setLine(e, xy0, xy1) {
+    if (!e) e = createSvgElem('line')
     e.setAttribute('x1', xy0[0])
     e.setAttribute('x2', xy1[0])
     e.setAttribute('y1', xy0[1])
@@ -26,21 +32,28 @@ function createLine(xy0, xy1) {
     return e
 }
 
-function drawGraph(graph2d) {
-    svg.setAttribute('stroke-width', 0.2 / (graph2d.n + 15))
-    let r = 1 / (graph2d.n + 15)
-    for (let i = 1; i < graph2d.n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (graph2d.hasEdge(i, j)) {
-                svg.appendChild(createLine(graph2d.xy[i], graph2d.xy[j]))
-            }
-        }
+let currentGraph = null
+
+function setGraph(graph2d) {
+    if (currentGraph && currentGraph != graph2d) {
+        clearGraph()
     }
-    for (let i = 0; i < graph2d.n; i++) {
-        svg.appendChild(createPoint(graph2d.xy[i], r))
-    }
+    currentGraph = graph2d
+    let scale = 1 / (graph2d.n + 15)
+
+    // asserting that edges didn't change
+    svg.setAttribute('stroke-width', 0.2 * scale)
+    let elems = svg.children
+    let i = 0
+    graph2d.iterEdges((a, b) => {
+        setLine(elems[i++], graph2d.xy[a], graph2d.xy[b])
+    })
+    graph2d.iterVertices(a => {
+        setPoint(elems[i++], graph2d.xy[a], scale)
+    })
 }
 
-function clearSvg() {
+function clearGraph() {
     svg.innerHTML = ''
+    currentGraph = null
 }

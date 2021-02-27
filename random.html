@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Graph Test</title>
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="./images/favicon.png">
 </head>
 <body>
     <script src="./js/graph.js"></script>
@@ -12,12 +13,7 @@
     <script>
 
         function initRandom() {
-            let n = chance(0.7) ? rand(10) + 8 : rand(70) + 3
-            let p = chance(0.2) ? Math.sqrt(1/n) : Math.pow(1/n, (1 + Math.random()) / 2)
-
-            console.log(`n = ${n}, p = ${p.toFixed(3)}`)
-            clearSvg()
-            drawGraph(scattered(chance(0.8) ? randomGraph(n, p) : randomTree(n)))
+            setGraph(scattered(pickRandomGraph()))
         }
 
         initRandom()
@@ -27,7 +23,7 @@
             e.stopPropagation()
         }
         window.onkeydown = (e) => {
-            if (e.code == 'Space') listener();
+            if (e.code == 'Space') listener(e)
             console.log(e)
         }
         window.onmousedown = listener

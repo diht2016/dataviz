@@ -3,6 +3,7 @@ html {
     background-image: radial-gradient(hsl(0deg, 0%, 35%), hsl(0deg, 0%, 33%), hsl(0deg, 0%, 27%), hsl(0deg, 0%, 20%));
     color: #ccc;
     font-family: monospace;
+    overflow: hidden;
 }
 body {
     margin: 0;
