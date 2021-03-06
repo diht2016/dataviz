@@ -8,6 +8,11 @@
     <link rel="shortcut icon" href="./images/favicon.png">
 </head>
 <body>
+    <div id="overlay">
+        <span id="curr-graph-desc"></span>
+        <br>
+        Click or press Enter to randomize
+    </div>
     <script src="./js/graph.js"></script>
     <script src="./js/svg-graph.js"></script>
     <script>
@@ -23,14 +28,11 @@
             e.stopPropagation()
         }
         window.onkeydown = (e) => {
-            if (e.code == 'Space') listener(e)
+            if (e.code == 'Enter') listener(e)
             console.log(e)
         }
         window.onmousedown = listener
 
     </script>
-    <div id="overlay">
-        Click or press space to randomize
-    </div>
 </body>
 </html>

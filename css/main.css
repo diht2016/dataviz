@@ -2,7 +2,7 @@ html {
     background-color: #555;
     background-image: radial-gradient(hsl(0deg, 0%, 35%), hsl(0deg, 0%, 33%), hsl(0deg, 0%, 27%), hsl(0deg, 0%, 20%));
     color: #ccc;
-    font-family: monospace;
+    font-family: 'Consolas', monospace;
     overflow: hidden;
 }
 body {
@@ -15,6 +15,27 @@ body > svg {
 }
 div#overlay {
     position: fixed;
-    top: 0.3em;
-    left: 0.5em;
+    top: 0;
+    left: 0;
+    padding: 0.5em 0.3em;
+}
+
+.code-input {
+    display: block;
+    background: #333;
+    width: 15em;
+    max-width: 80vw;
+}
+.code-input.error {
+    background: #833;
+}
+.collapsible {
+    height: 0;
+    overflow: hidden;
+}
+input[type="checkbox"]:checked + label.collapser + .collapsible {
+    height: auto;
+}
+label.collapser {
+    cursor: pointer;
 }

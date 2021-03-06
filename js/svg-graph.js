@@ -1,5 +1,6 @@
 let svgNS = 'http://www.w3.org/2000/svg'
 let svg = document.createElementNS(svgNS, 'svg')
+let graphDescElem = document.getElementById('curr-graph-desc')
 
 let margin = 0.1
 
@@ -35,10 +36,16 @@ function setLine(e, xy0, xy1) {
 let currentGraph = null
 
 function setGraph(graph2d) {
-    if (currentGraph && currentGraph != graph2d) {
-        clearGraph()
+    if (currentGraph != graph2d) {
+        if (currentGraph) {
+            clearGraph()
+        }
+        currentGraph = graph2d
+        if (graphDescElem) {
+            console.log(graph2d.description)
+            graphDescElem.textContent = graph2d.description
+        }
     }
-    currentGraph = graph2d
     let scale = 1 / (graph2d.n + 15)
 
     // asserting that edges didn't change

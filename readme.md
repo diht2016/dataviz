@@ -1,7 +1,7 @@
 # Data visualization algorithms
 
-JavaScript generates SVG elements to draw graphs.
+All algorithms are written in pure JavaScript. Graphs are drawn using SVG elements.
 
 Pages:
 - [Random graph scattered randomly (test)](https://diht2016.github.io/dataviz/random)
-- [Graph relaxation (test)](https://diht2016.github.io/dataviz/relax)
+- [Graph relaxation animation](https://diht2016.github.io/dataviz/relax)

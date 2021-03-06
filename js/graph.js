@@ -9,6 +9,7 @@ class UndirectedGraph {
         this.table = range(n, _ => range(n, 0))
         this.powers = Array(n)
         this.powers.fill(0)
+        this.description = 'custom graph'
     }
 
     setEdge(a, b) {
@@ -53,12 +54,14 @@ let chance = p => (Math.random() < p)
 function randomTree(n = 10) {
     let graph = new UndirectedGraph(n)
     graph.iterVertices(a => graph.setEdge(a, rand(a)))
+    graph.description = `randomTree(n = ${n})`
     return graph
 }
 
 function randomGraph(n = 10, p = Math.sqrt(1/n)) {
     let graph = new UndirectedGraph(n)
     graph.iterPairs((a, b) => {if (chance(p)) graph.setEdge(a, b)})
+    graph.description = `randomGraph(n = ${n}, p = ${p.toFixed(3)})`
     return graph
 }
 
@@ -66,10 +69,8 @@ function pickRandomGraph() {
     let n = chance(0.6) ? rand(10) + 8 : rand(70) + 3
     if (chance(0.8)) {
         let p = Math.pow(1/n, (1 + Math.random()) / 2)
-        console.log(`randomGraph(n = ${n}, p = ${p.toFixed(3)})`)
         return randomGraph(n, p)
     } else {
-        console.log(`randomTree(n = ${n})`)
         return randomTree(n)
     }
 }

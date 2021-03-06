@@ -8,12 +8,23 @@
     <link rel="shortcut icon" href="./images/favicon.png">
 </head>
 <body>
+    <div id="overlay">
+        <span id="curr-graph-desc"></span>
+        <br>
+        Click or press Enter to randomize
+        <br>
+        <input type="checkbox" id="input-toggler">
+        <label class="collapser" for="input-toggler">Edit functions</label>
+        <div id="func-inputs" class="collapsible"></div>
+    </div>
     <script src="./js/graph.js"></script>
     <script src="./js/svg-graph.js"></script>
+    <script src="./js/func-input.js"></script>
     <script>
 
         let graph2d = null
-        let dist2d = xy => Math.sqrt(xy[0] ** 2 + xy[1] ** 2)
+        let sqrt = Math.sqrt
+        let dist2d = xy => sqrt(xy[0] ** 2 + xy[1] ** 2)
         let diff2d = (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]]
 
         function initRandom() {
@@ -21,15 +32,11 @@
             setGraph(graph2d)
         }
 
-        // todo: make these settings editable from the page
-        let gCenter = 0.01
-        let gConnected = 0.01
-        let gCrowd = -1
-        let fCenter = (d, n) => gCenter * d**2
-        let fConnected = d => gConnected * d
-        let fCrowd = d => gCrowd / (0.01 + d**2)
-        let fNorm = d => d ** 0.7
-        let fScale = n => Math.sqrt(n) * 5
+        createFuncInput("fConnected", "d => 0.01 * d", "Connected attraction force")
+        createFuncInput("fCrowd", "d => -1 / (0.01 + d**2)", "Eachother attraction force")
+        createFuncInput("fCenter", "(d, n) => 0.01 * d**2", "Center attraction force")
+        createFuncInput("fNorm", "d => d**0.7", "Speed correction")
+        createFuncInput("fScale", "n => sqrt(n) * 5", "Distance scale")
 
         // todo: fix explosion on fully-connected graph
 
@@ -47,7 +54,8 @@
                 }
                 let centerDiff = axy.map(t => 1 - t * 2)
                 let centerDist = dist2d(centerDiff)
-                add(centerDiff, fCenter(centerDist) / centerDist)
+                add(centerDiff, fCenter(centerDist, graph2d.n) / centerDist)
+                //let k = graph2d.powers[a]
                 diffCoords.forEach((xy, i) => {
                     let d = dists[i]
                     if (!d) return
@@ -71,16 +79,13 @@
             e.stopPropagation()
         }
         window.onkeydown = (e) => {
-            if (e.code == 'Space') listener(e)
-            console.log(e)
+            if (e.code == 'Enter') listener(e)
+            //console.log(e)
         }
-        window.onmousedown = listener
+        svg.onmousedown = listener
 
         setInterval(relax, 20)
 
     </script>
-    <div id="overlay">
-        Click or press space to randomize
-    </div>
 </body>
 </html>
