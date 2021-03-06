@@ -7,11 +7,16 @@ class UndirectedGraph {
         this.n = n
         this.halfsets = range(n, _ => new Set())
         this.table = range(n, _ => range(n, 0))
+        this.powers = Array(n)
+        this.powers.fill(0)
     }
 
     setEdge(a, b) {
+        if (this.table[a][b]) return
         this.table[a][b] = 1
         this.table[b][a] = 1
+        this.powers[a]++
+        this.powers[b]++
         if (a < b) {
             this.halfsets[a].add(b)
         } else {
