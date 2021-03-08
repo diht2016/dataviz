@@ -5,6 +5,7 @@ let clone = orig => Object.assign(Object.create(Object.getPrototypeOf(orig)), or
 class UndirectedGraph {
     constructor(n) {
         this.n = n
+        this.sets = range(n, _ => new Set())
         this.halfsets = range(n, _ => new Set())
         this.table = range(n, _ => range(n, 0))
         this.powers = Array(n)
@@ -18,6 +19,8 @@ class UndirectedGraph {
         this.table[b][a] = 1
         this.powers[a]++
         this.powers[b]++
+        this.sets[a].add(b)
+        this.sets[b].add(a)
         if (a < b) {
             this.halfsets[a].add(b)
         } else {
@@ -27,6 +30,10 @@ class UndirectedGraph {
 
     hasEdge(a, b) {
         return this.table[a][b]
+    }
+
+    adjacentOf(a) {
+        return this.sets[a]
     }
 
     iterPairs(f) {
@@ -76,13 +83,11 @@ function pickRandomGraph() {
 }
 
 function scattered(graph) {
-    graph = clone(graph)
     graph.coords = range(graph.n, _ => [Math.random(), Math.random()])
     return graph
 }
 
 function scatteredCircle(graph) {
-    graph = clone(graph)
     graph.coords = range(graph.n, _ => {
         let phi = Math.random() * 2 * Math.PI
         let r = Math.sqrt(Math.random()) * 0.5
