@@ -1,4 +1,4 @@
-import {range, rand, chance} from '/js/shortcuts.js'
+import {range, rand, chance} from './shortcuts.js'
 
 export class Graph {
     constructor(n, isDirected = false) {
