@@ -34,7 +34,7 @@ function relax(graph2d) {
             let d = dists[i]
             if (!d) return
             add(xy, fCrowd(d) / d)
-            if (!graph2d.table[a][i]) return
+            if (!graph2d.tableUnordered[a][i]) return
             add(xy, kConnects * fConnected(d) / d)
         })
         let deltaNorm = dist2d(nxy)
