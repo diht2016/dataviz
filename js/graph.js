@@ -62,7 +62,7 @@ export class Graph {
 
 export function randomTree(n = 10) {
     let graph = new Graph(n)
-    graph.iterVertices(a => graph.setEdge(a, rand(a)))
+    graph.iterVertices(a => {if (a) graph.setEdge(a, rand(a))})
     graph.description = `randomTree(n = ${n})`
     return graph
 }

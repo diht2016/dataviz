@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Graph Visualization</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="./images/favicon.png">
+</head>
+<body>
+    <div id="overlay">
+        <span id="curr-graph-desc"></span>
+        <br>
+        Click or press Enter to randomize
+        <br>
+        <input type="checkbox" id="input-toggler">
+        <label class="collapser" for="input-toggler">Edit functions</label>
+        <div id="func-inputs" class="collapsible"></div>
+    </div>
+    <script type="module">
+        import {Graph, randomTree} from "./js/graph.js"
+        import {initSVG, drawGraph} from "./js/2d/svg-graph.js"
+        import {initRelaxFunctions, relax} from "./js/2d/relax.js"
+        import {scatteredCircle} from "./js/2d/scatter.js"
+        import {rand} from "./js/shortcuts.js"
+        import {graphMiddle, treeHierarchy} from "./js/tree.js"
+
+        let graph2d = null
+
+        function initRandom() {
+            graph2d = scatteredCircle(randomTree(rand(30) + 2))
+            let h = treeHierarchy(graph2d)
+            console.log(JSON.stringify(h, null, 2))
+            drawGraph(graph2d)
+        }
+
+        let svg = initSVG()
+        initRelaxFunctions()
+        initRandom()
+
+        let listener = (e) => {
+            initRandom()
+            e.preventDefault()
+            e.stopPropagation()
+        }
+        window.onkeydown = (e) => {
+            if (e.code == 'Enter') listener(e)
+            //console.log(e)
+        }
+        svg.onmousedown = listener
+
+        function update() {
+            relax(graph2d)
+            drawGraph(graph2d)
+        }
+
+        setInterval(update, 20)
+
+    </script>
+</body>
+</html>
