@@ -1,4 +1,4 @@
-import {range} from '../shortcuts.js'
+import {range} from './shortcuts.js'
 
 export function scattered(graph) {
     graph.coords = range(graph.n, _ => [Math.random(), Math.random()])

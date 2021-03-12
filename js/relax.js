@@ -1,4 +1,4 @@
-import {createFuncInput} from '../func-input.js'
+import {createFuncInput} from './func-input.js'
 
 let dist2d = xy => Math.sqrt(xy[0] ** 2 + xy[1] ** 2)
 let diff2d = (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]]
