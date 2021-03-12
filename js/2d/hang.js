@@ -44,7 +44,7 @@ function collapseWaves(waves, n) {
     return newWaves
 }
 
-function hanged(graph, addNoise = false) {
+export function hanged(graph, addNoise = false) {
     let waves = getWavesFromBFS(graph)
     waves = collapseWaves(waves, graph.n)
     graph.coords = Array(graph.n)

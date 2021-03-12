@@ -1,5 +1,6 @@
+import {Graph} from './graph.js'
 
-function parseGraphML(xmlText) {
+export function parseGraphML(xmlText) {
     let xml = new DOMParser().parseFromString(xmlText, 'text/xml')
     let graphElem = xml.getElementsByTagName('graph')[0]
     let children = Array.from(graphElem.children)

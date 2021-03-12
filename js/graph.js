@@ -1,8 +1,6 @@
-let range = (n, f) => [...Array(n)].map((_, i) => (typeof f == 'function' ? f(i) : f))
-let sum = (arr) => arr.reduce((a, b) => a + b, 0)
-let clone = orig => Object.assign(Object.create(Object.getPrototypeOf(orig)), orig)
+import {range, rand, chance} from '/js/shortcuts.js'
 
-class Graph {
+export class Graph {
     constructor(n, isDirected = false) {
         this.n = n
         this.sets = range(n, _ => new Set())
@@ -62,24 +60,21 @@ class Graph {
     }
 }
 
-let rand = n => Math.floor(Math.random() * n)
-let chance = p => (Math.random() < p)
-
-function randomTree(n = 10) {
+export function randomTree(n = 10) {
     let graph = new Graph(n)
     graph.iterVertices(a => graph.setEdge(a, rand(a)))
     graph.description = `randomTree(n = ${n})`
     return graph
 }
 
-function randomGraph(n = 10, p = Math.sqrt(1/n)) {
+export function randomGraph(n = 10, p = Math.sqrt(1/n)) {
     let graph = new Graph(n)
     graph.iterPairs((a, b) => {if (chance(p)) graph.setEdge(a, b)})
     graph.description = `randomGraph(n = ${n}, p = ${p.toFixed(3)})`
     return graph
 }
 
-function pickRandomGraph() {
+export function pickRandomGraph() {
     let n = chance(0.6) ? rand(10) + 8 : rand(70) + 3
     if (chance(0.8)) {
         let p = Math.pow(1/n, (1 + Math.random()) / 2)
@@ -87,18 +82,4 @@ function pickRandomGraph() {
     } else {
         return randomTree(n)
     }
-}
-
-function scattered(graph) {
-    graph.coords = range(graph.n, _ => [Math.random(), Math.random()])
-    return graph
-}
-
-function scatteredCircle(graph) {
-    graph.coords = range(graph.n, _ => {
-        let phi = Math.random() * 2 * Math.PI
-        let r = Math.sqrt(Math.random()) * 0.5
-        return [0.5 + r * Math.cos(phi), 0.5 + r * Math.sin(phi)]
-    })
-    return graph
 }

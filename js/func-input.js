@@ -1,6 +1,5 @@
-let funcContainer = document.getElementById('func-inputs')
 
-function createFuncInput(name, code, description) {
+export function createFuncInput(name, code, description) {
     let label = document.createTextNode(description + ':')
     let input = document.createElement('input')
     input.type = 'text'
@@ -19,10 +18,16 @@ function createFuncInput(name, code, description) {
         }
     }
 
+    let funcContainer = document.getElementById('func-inputs')
     funcContainer.appendChild(label)
     funcContainer.appendChild(input)
     setFunc(name, code)
 }
+
+// shortcuts for eval
+let sqrt = Math.sqrt
+let min = Math.min
+let max = Math.max
 
 function setFunc(name, code) {
     let lambda = eval(code) // eval = evil

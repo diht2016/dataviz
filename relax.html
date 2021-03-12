@@ -17,20 +17,20 @@
         <label class="collapser" for="input-toggler">Edit functions</label>
         <div id="func-inputs" class="collapsible"></div>
     </div>
-    <script src="./js/graph.js"></script>
-    <script src="./js/svg-graph.js"></script>
-    <script src="./js/func-input.js"></script>
-    <script src="./js/relax.js"></script>
-    <script src="./js/hang.js"></script>
-    <script>
+    <script type="module">
+        import {Graph, pickRandomGraph} from "/js/graph.js"
+        import {initSVG, drawGraph} from "/js/2d/svg-graph.js"
+        import {initRelaxFunctions, relax} from "/js/2d/relax.js"
+        import {scatteredCircle} from "/js/2d/scatter.js"
 
         let graph2d = null
 
         function initRandom() {
             graph2d = scatteredCircle(pickRandomGraph())
-            setGraph(graph2d)
+            drawGraph(graph2d)
         }
 
+        let svg = initSVG()
         initRelaxFunctions()
         initRandom()
 
@@ -47,7 +47,7 @@
 
         function update() {
             relax(graph2d)
-            setGraph(graph2d)
+            drawGraph(graph2d)
         }
 
         setInterval(update, 20)

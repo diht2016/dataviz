@@ -1,11 +1,9 @@
-let sqrt = Math.sqrt
-let min = Math.min
-let max = Math.max
+import {createFuncInput} from '../func-input.js'
 
-let dist2d = xy => sqrt(xy[0] ** 2 + xy[1] ** 2)
+let dist2d = xy => Math.sqrt(xy[0] ** 2 + xy[1] ** 2)
 let diff2d = (xy1, xy2) => [xy1[0] - xy2[0], xy1[1] - xy2[1]]
 
-function initRelaxFunctions() {
+export function initRelaxFunctions() {
     createFuncInput("fConnected", "d => 0.01 * d", "Connected attraction force")
     createFuncInput("fCrowd", "d => -1 / (0.01 + d**2)", "Eachother attraction force")
     createFuncInput("fCenter", "(d, n) => 0.01 * d**2", "Center attraction force")
@@ -14,7 +12,7 @@ function initRelaxFunctions() {
     createFuncInput("fScale", "n => sqrt(n) * 5", "Distance scale")
 }
 
-function relax(graph2d) {
+export function relax(graph2d) {
     let scale = fScale(graph2d.n)
     let newCoords = Array()
     graph2d.iterVertices(a => {
