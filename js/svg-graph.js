@@ -6,7 +6,7 @@ let margin = 0.1
 
 export function initSVG() {
     svg = document.createElementNS(svgNS, 'svg')
-    svg.setAttribute('viewBox', [0-margin, 0-margin, 1+2*margin, 1+2*margin].join(' '))
+    setLimits()
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
     svg.setAttribute('stroke', '#ccc')
     svg.setAttribute('fill', '#fa0')
@@ -41,6 +41,19 @@ function setLine(e, xy0, xy1) {
     return e
 }
 
+let defaultLimits = [0, 0, 1, 1]
+
+function setLimits(limits) {
+    if (!limits) limits = defaultLimits
+    let w = limits[2] - limits[0]
+    let h = limits[3] - limits[1]
+    let xm = margin * Math.max(w, 0.5)
+    let ym = margin * Math.max(h, 0.5)
+    let view = [limits[0]-xm, limits[1]-ym, w+2*xm, h+2*ym]
+    svg.setAttribute('viewBox', view.join(' '))
+    return (w + h + 2 * (xm + ym)) / 2
+}
+
 let currentGraph = null
 
 export function drawGraph(graph2d) {
@@ -55,7 +68,8 @@ export function drawGraph(graph2d) {
             graphDescElem.textContent = graph2d.description
         }
     }
-    let scale = 1 / (graph2d.n + 15)
+    let limScale = setLimits(graph2d.limits)
+    let scale = limScale / (graph2d.n + 15)
 
     // asserting that edges didn't change
     svg.setAttribute('stroke-width', 0.2 * scale)
