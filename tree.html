@@ -9,33 +9,24 @@
 </head>
 <body>
     <div id="overlay">
-        <span id="curr-graph-desc"></span>
-        <br>
         Click or press Enter to randomize
         <br>
-        <input type="checkbox" id="input-toggler">
-        <label class="collapser" for="input-toggler">Edit functions</label>
-        <div id="func-inputs" class="collapsible"></div>
+        <span id="curr-graph-desc"></span>
     </div>
     <script type="module">
         import {Graph, randomTree} from "./js/graph.js"
         import {initSVG, drawGraph} from "./js/svg-graph.js"
-        import {initRelaxFunctions, relax} from "./js/relax.js"
-        import {scatteredCircle} from "./js/scatter.js"
         import {rand} from "./js/shortcuts.js"
-        import {graphMiddle, treeHierarchy} from "./js/tree.js"
+        import {graphMiddle, treeHanged} from "./js/tree.js"
 
         let graph2d = null
 
         function initRandom() {
-            graph2d = scatteredCircle(randomTree(rand(30) + 2))
-            let h = treeHierarchy(graph2d)
-            console.log(JSON.stringify(h, null, 2))
+            graph2d = treeHanged(randomTree(rand(70) + 2))
             drawGraph(graph2d)
         }
 
         let svg = initSVG()
-        initRelaxFunctions()
         initRandom()
 
         let listener = (e) => {
@@ -48,13 +39,6 @@
             //console.log(e)
         }
         svg.onmousedown = listener
-
-        function update() {
-            relax(graph2d)
-            drawGraph(graph2d)
-        }
-
-        setInterval(update, 20)
 
     </script>
 </body>
