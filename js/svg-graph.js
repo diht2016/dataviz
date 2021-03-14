@@ -1,6 +1,8 @@
 const svgNS = 'http://www.w3.org/2000/svg'
 let svg = null
 let g = null
+let gv = null
+let ge = null
 
 let margin = 0.1
 
@@ -8,37 +10,66 @@ export function initSVG() {
     svg = document.createElementNS(svgNS, 'svg')
     setLimits()
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
-    svg.setAttribute('stroke', '#ccc')
-    svg.setAttribute('fill', '#fa0')
 
-    g = document.createElementNS(svgNS, 'g')
-    svg.appendChild(g)
+    g = createElem('g', svg)
+    ge = createElem('g', g)
+    gv = createElem('g', g)
+
+    g.setAttribute('stroke', '#ccc')
+    gv.setAttribute('fill', '#fa0')
+    ge.setAttribute('fill', 'transparent')
 
     document.body.appendChild(svg)
     return svg
 }
 
-function createGraphElem(tagName) {
+function createElem(tagName, parent) {
     let e = document.createElementNS(svgNS, tagName)
-    g.appendChild(e)
+    if (parent) parent.appendChild(e)
     return e
 }
 
 function setPoint(e, xy, r) {
-    if (!e) e = createGraphElem('circle')
+    if (!e) e = createElem('circle', gv)
     e.setAttribute('r', r)
     e.setAttribute('cx', xy[0])
     e.setAttribute('cy', xy[1])
     return e
 }
 
-function setLine(e, xy0, xy1) {
-    if (!e) e = createGraphElem('line')
-    e.setAttribute('x1', xy0[0])
-    e.setAttribute('x2', xy1[0])
-    e.setAttribute('y1', xy0[1])
-    e.setAttribute('y2', xy1[1])
-    return e
+function setLine(e, xy0, xy1, type) {
+    if (type) {
+        if (!e) e = createElem('path', ge)
+        let path = `M ${xy0[0]} ${xy0[1]}`
+        if (type == 'verticalCurve') {
+            let yd = Math.abs(xy0[1] - xy1[1])
+            let dist = 3 * Math.abs(xy0[0] - xy1[0]) + yd
+            let t = yd / dist
+            let y0 = xy0[1] * t + xy1[1] * (1 - t)
+            let y1 = xy1[1] * t + xy0[1] * (1 - t)
+            path += ` C ${xy0[0]} ${y0} ${xy1[0]} ${y1} ${xy1[0]} ${xy1[1]}`
+        } else if (type == 'polarCurve') {
+            let r0 = Math.hypot(xy0[0], xy0[1])
+            let r1 = Math.hypot(xy1[0], xy1[1])
+            let dist = 3 * Math.hypot(xy0[0] - xy1[0], xy0[1] - xy1[1])
+            let t = Math.abs(r0 - r1) / dist
+            console.log( Math.abs(r0 - r1), dist, t)
+            let k0 = r0 == 0 ? 0 : r1 / r0 * (1 - t) + t
+            let k1 = r1 == 0 ? 0 : r0 / r1 * (1 - t) + t
+            path += ` C ${k0 * xy0[0]} ${k0 * xy0[1]} ${k1 * xy1[0]} ${k1 * xy1[1]} ${xy1[0]} ${xy1[1]}`
+        } else {
+            path += ` L ${xy1[0]} ${xy1[1]}`
+        }
+        e.setAttribute('d', path)
+        return e
+    } else {
+        if (!e) e = createElem('line', ge)
+        e.setAttribute('x1', xy0[0])
+        e.setAttribute('x2', xy1[0])
+        e.setAttribute('y1', xy0[1])
+        e.setAttribute('y2', xy1[1])
+        return e
+    }
 }
 
 let defaultLimits = [0, 0, 1, 1]
@@ -72,18 +103,22 @@ export function drawGraph(graph2d) {
     let scale = limScale / (graph2d.n + 15)
 
     // asserting that edges didn't change
-    svg.setAttribute('stroke-width', 0.2 * scale)
-    let elems = g.children
+    g.setAttribute('stroke-width', 0.2 * scale)
+    let lineType = graph2d.lineType
+    let elems = ge.children
     let i = 0
     graph2d.iterEdges((a, b) => {
-        setLine(elems[i++], graph2d.coords[a], graph2d.coords[b])
+        setLine(elems[i++], graph2d.coords[a], graph2d.coords[b], lineType)
     })
+    elems = gv.children
+    i = 0
     graph2d.iterVertices(a => {
         setPoint(elems[i++], graph2d.coords[a], scale)
     })
 }
 
 export function clearGraph() {
-    g.innerHTML = ''
+    gv.innerHTML = ''
+    ge.innerHTML = ''
     currentGraph = null
 }

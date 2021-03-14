@@ -13,10 +13,16 @@
         <br>
         <span id="curr-graph-desc"></span>
         <br>
+        Edge type:
+        <select id="curves">
+            <option value="0">Simple lines</option>
+            <option value="1" selected>Bézier curves</option>
+        </select>
+        <br>
         Vertex placement:
         <select id="placement">
-            <option value="0" default>Hanged</option>
-            <option value="1" default>Radial</option>
+            <option value="0" selected>Hanged</option>
+            <option value="1">Radial</option>
         </select>
     </div>
     <script type="module">
@@ -28,10 +34,14 @@
         let hangedGraph = null
         let radialGraph = null
         let placementSelect = document.getElementById('placement')
+        let curvesSelect = document.getElementById('curves')
 
         function drawSelected() {
             let index = +placementSelect.value
-            drawGraph([hangedGraph, radialGraph][index])
+            let currGraph = [hangedGraph, radialGraph][index]
+            let useCurves = +curvesSelect.value
+            currGraph.lineType = currGraph.lineType.replace('#', '') + '#'.repeat(!useCurves)
+            drawGraph(currGraph)
         }
 
         function initRandom() {
@@ -55,6 +65,7 @@
         svg.onmousedown = listener
 
         placementSelect.oninput = drawSelected
+        curvesSelect.oninput = drawSelected
 
     </script>
 </body>

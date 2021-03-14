@@ -11,6 +11,8 @@ export class Graph {
         this.powers.fill(0)
         this.description = 'custom graph'
         this.isDirected = isDirected
+        this.lineType = null
+        this.useLineType = true
     }
 
     setEdge(a, b) {
