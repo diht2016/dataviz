@@ -12,18 +12,32 @@
         Click or press Enter to randomize
         <br>
         <span id="curr-graph-desc"></span>
+        <br>
+        Vertex placement:
+        <select id="placement">
+            <option value="0" default>Hanged</option>
+            <option value="1" default>Radial</option>
+        </select>
     </div>
     <script type="module">
         import {Graph, randomTree} from "./js/graph.js"
         import {initSVG, drawGraph} from "./js/svg-graph.js"
-        import {rand} from "./js/shortcuts.js"
-        import {graphMiddle, treeHanged} from "./js/tree.js"
+        import {rand, clone} from "./js/shortcuts.js"
+        import {graphMiddle, treeHanged, toPolar} from "./js/tree.js"
 
-        let graph2d = null
+        let hangedGraph = null
+        let radialGraph = null
+        let placementSelect = document.getElementById('placement')
+
+        function drawSelected() {
+            let index = +placementSelect.value
+            drawGraph([hangedGraph, radialGraph][index])
+        }
 
         function initRandom() {
-            graph2d = treeHanged(randomTree(rand(70) + 2))
-            drawGraph(graph2d)
+            hangedGraph = treeHanged(randomTree(rand(70) + 3))
+            radialGraph = toPolar(clone(hangedGraph))
+            drawSelected()
         }
 
         let svg = initSVG()
@@ -39,6 +53,8 @@
             //console.log(e)
         }
         svg.onmousedown = listener
+
+        placementSelect.oninput = drawSelected
 
     </script>
 </body>

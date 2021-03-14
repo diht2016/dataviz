@@ -22,12 +22,16 @@ body > svg {
     border-radius: 0 0 1em 0;
 }
 
-.code-input {
-    display: block;
+input[type="text"], select {
     background: #333;
     color: #eee;
+}
+
+.code-input {
+    display: block;
     width: 15em;
     max-width: 80vw;
+    font-family: 'Consolas', monospace;
 }
 .code-input.error {
     background: #833;

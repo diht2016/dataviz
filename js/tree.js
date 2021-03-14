@@ -48,6 +48,21 @@ export function treeHanged(graph, root = null) {
     visited.fill(false)
     let step = 0.8
 
+    function mergeHulls(hull, lhull, rhull) {
+        let dist = 0
+        let depth = Math.min(lhull[0].length, rhull[0].length)
+        // compute distance between subtrees
+        for (let h = 0; h < depth; h++) {
+            let currDist = lhull[1][h] - rhull[0][h]
+            if (dist < currDist) dist = currDist
+        }
+        dist += step
+        // merge two hulls
+        hull[0] = lhull[0].concat(rhull[0].slice(lhull[0].length).map(x => x + dist))
+        hull[1] = rhull[1].map(x => x + dist).concat(lhull[1].slice(rhull[1].length))
+        return dist
+    }
+
     function buildNode(u) {
         visited[u] = true
         let children = Array.from(graph.adjacentOf(u))
@@ -57,31 +72,32 @@ export function treeHanged(graph, root = null) {
         if (children.length == 0) {
             hull = [[0], [0]]
         } else {
-            hull = children[0].hull
-            let dist = 0
-            for (let i = 1; i < children.length; i++) {
+            let middle = Math.floor(children.length / 2)
+            hull = children[middle].hull
+            // merge all from right
+            let rdist = 0
+            for (let i = middle + 1; i < children.length; i++) {
                 let r = children[i]
-                // compute distance between subtrees
-                let depth = Math.min(hull[0].length, r.hull[0].length)
-                for (let h = 0; h < depth; h++) {
-                    let currDist = hull[1][h] - r.hull[0][h]
-                    if (dist < currDist) dist = currDist
-                }
-                dist += step
-                // merge two hulls
-                hull[0] = hull[0].concat(r.hull[0].slice(hull[0].length).map(x => x + dist))
-                hull[1] = r.hull[1].map(x => x + dist).concat(hull[1].slice(r.hull[1].length))
-                r.offset = dist
+                rdist = mergeHulls(hull, hull, r.hull)
+                r.offset = rdist
+            }
+            // merge all from left
+            let ldist = 0
+            for (let i = middle - 1; i >= 0; i--) {
+                let l = children[i]
+                ldist -= mergeHulls(hull, l.hull, hull)
+                l.offset = ldist
             }
             // shift to center
-            let middle = dist / 2
+            let center = (rdist + ldist) / 2
+            let shift = (rdist - ldist) / 2
             hull = hull.map(half => {
-                let newHalf = half.map(x => x - middle)
+                let newHalf = half.map(x => x - shift)
                 newHalf.unshift(0)
                 return newHalf
             })
             children.forEach(c => {
-                c.offset -= middle
+                c.offset -= center
                 c.hull = null
             })
         }
@@ -106,7 +122,23 @@ export function treeHanged(graph, root = null) {
         y += 1
         node.children.forEach(c => computeCoords(c, x, y))
     }
-
     computeCoords(rootNode, 0, 0)
+    graph.limits[0] -= step / 2
+    graph.limits[2] += step / 2
+
+    graph.lineType = 'verticalCurve'
+    return graph
+}
+
+export function toPolar(graph) {
+    graph.coords = graph.coords.map(xy => {
+        if (xy[1] == 0) return [0, 0]
+        let phi = xy[0] / (graph.limits[2] - graph.limits[0]) * 2 * Math.PI
+        let r = xy[1] / graph.limits[3]
+        console.log(xy[1], graph.limits[0], xy[0], graph.limits[2])
+        return [-r * Math.sin(phi), -r * Math.cos(phi)]
+    })
+    graph.limits = [-1, -1, 1, 1]
+    graph.lineType = 'polarCurve'
     return graph
 }
