@@ -6,7 +6,7 @@ export function parseGraphML(xmlText) {
     let children = Array.from(graphElem.children)
     let edgeType = graphElem.getAttribute('edgedefault')
     let vertexIds = children.filter(e => e.tagName == 'node').map(e => e.id)
-    let graph = new Graph(vertexIds.length, isDirected = edgeType == 'directed')
+    let graph = new Graph(vertexIds.length, edgeType == 'directed')
     children.filter(e => e.tagName == 'edge').forEach(e => {
         let a = vertexIds.indexOf(e.getAttribute('source'))
         let b = vertexIds.indexOf(e.getAttribute('target'))

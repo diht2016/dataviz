@@ -53,7 +53,6 @@ function setLine(e, xy0, xy1, type) {
             let r1 = Math.hypot(xy1[0], xy1[1])
             let dist = 3 * Math.hypot(xy0[0] - xy1[0], xy0[1] - xy1[1])
             let t = Math.abs(r0 - r1) / dist
-            console.log( Math.abs(r0 - r1), dist, t)
             let k0 = r0 == 0 ? 0 : r1 / r0 * (1 - t) + t
             let k1 = r1 == 0 ? 0 : r0 / r1 * (1 - t) + t
             path += ` C ${k0 * xy0[0]} ${k0 * xy0[1]} ${k1 * xy1[0]} ${k1 * xy1[1]} ${xy1[0]} ${xy1[1]}`

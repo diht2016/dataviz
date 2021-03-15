@@ -29,8 +29,10 @@
         import {Graph, randomTree} from "./js/graph.js"
         import {initSVG, drawGraph} from "./js/svg-graph.js"
         import {rand, clone} from "./js/shortcuts.js"
-        import {graphMiddle, treeHanged, toPolar} from "./js/tree.js"
+        import {treeHanged} from "./js/tree.js"
+        import {parseGraphML, serializeGraphML} from "./js/graphml.js"
 
+        let graph = null
         let hangedGraph = null
         let radialGraph = null
         let placementSelect = document.getElementById('placement')
@@ -45,8 +47,10 @@
         }
 
         function initRandom() {
-            hangedGraph = treeHanged(randomTree(rand(70) + 3))
-            radialGraph = toPolar(clone(hangedGraph))
+            graph = randomTree(rand(90) + 3)
+            hangedGraph = treeHanged(clone(graph), false)
+            radialGraph = treeHanged(clone(graph), true)
+            console.log(serializeGraphML(graph))
             drawSelected()
         }
 
