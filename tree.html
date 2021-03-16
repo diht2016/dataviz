@@ -32,7 +32,7 @@
         import {treeHanged} from "./js/tree.js"
         import {parseGraphML, serializeGraphML} from "./js/graphml.js"
 
-        let graph = null
+        let cleanGraph = null
         let hangedGraph = null
         let radialGraph = null
         let placementSelect = document.getElementById('placement')
@@ -47,10 +47,14 @@
         }
 
         function initRandom() {
-            graph = randomTree(rand(90) + 3, true)
+            processGraph(randomTree(rand(90) + 3, true))
+        }
+
+        function processGraph(graph) {
+            cleanGraph = graph
             hangedGraph = treeHanged(clone(graph), false)
             radialGraph = treeHanged(clone(graph), true)
-            console.log(serializeGraphML(graph))
+            //console.log(serializeGraphML(graph))
             drawSelected()
         }
 

@@ -30,7 +30,6 @@ export function treeHanged(graph, radial = false, root = null) {
             let invPowers = Array(graph.n)
             invPowers.fill(0)
             graph.sets.forEach(s => s.forEach(b => invPowers[b]++))
-            console.log(invPowers)
             root = invPowers.indexOf(0)
             //root = graph.sets.map(s => s.size).indexOf(0)
         }
@@ -56,7 +55,6 @@ export function treeHanged(graph, radial = false, root = null) {
     }
 
     function buildNode(u, h) {
-        console.log(u, h)
         visited[u] = true
         let children = Array.from(graph.adjacentOf(u))
             .filter(v => !visited[v])
@@ -133,7 +131,6 @@ export function treeHanged(graph, radial = false, root = null) {
     computeCoords(rootNode, 0, 0)
 
     graph.lineType = 'verticalCurve'
-    console.log(radial)
     if (radial) graph = toPolar(graph)
     return graph
 }

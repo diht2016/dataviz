@@ -1,18 +1,24 @@
 import {Graph} from './graph.js'
 
 export function parseGraphML(xmlText) {
-    let xml = new DOMParser().parseFromString(xmlText, 'text/xml')
-    let graphElem = xml.getElementsByTagName('graph')[0]
-    let children = Array.from(graphElem.children)
-    let edgeType = graphElem.getAttribute('edgedefault')
-    let vertexIds = children.filter(e => e.tagName == 'node').map(e => e.id)
-    let graph = new Graph(vertexIds.length, edgeType == 'directed')
-    children.filter(e => e.tagName == 'edge').forEach(e => {
-        let a = vertexIds.indexOf(e.getAttribute('source'))
-        let b = vertexIds.indexOf(e.getAttribute('target'))
-        graph.setEdge(a, b)
-    })
-    return graph
+    let parser = new DOMParser()
+    try {
+        let xml = parser.parseFromString(xmlText, 'text/xml')
+        let graphElem = xml.getElementsByTagName('graph')[0]
+        let children = Array.from(graphElem.children)
+        let edgeType = graphElem.getAttribute('edgedefault')
+        let vertexIds = children.filter(e => e.tagName == 'node').map(e => e.id)
+        let graph = new Graph(vertexIds.length, edgeType == 'directed')
+        children.filter(e => e.tagName == 'edge').forEach(e => {
+            let a = vertexIds.indexOf(e.getAttribute('source'))
+            let b = vertexIds.indexOf(e.getAttribute('target'))
+            graph.setEdge(a, b)
+        })
+        return graph
+    } catch(error) {
+        alert('Failed to parse GraphML')
+        throw error
+    }
 }
 
 export function serializeGraphML(graph) {
@@ -24,7 +30,6 @@ export function serializeGraphML(graph) {
         body.push(`<edge source="n${a}" target="n${b}"/>`)
     }, graph.isDirected)
     let edgeType = graph.isDirected ? 'directed' : 'undirected'
-    // todo: support directed graphs
     return `<?xml version="1.0" encoding="UTF-8"?>
     <graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
