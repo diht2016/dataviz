@@ -47,7 +47,7 @@
         }
 
         function initRandom() {
-            graph = randomTree(rand(90) + 3)
+            graph = randomTree(rand(90) + 3, true)
             hangedGraph = treeHanged(clone(graph), false)
             radialGraph = treeHanged(clone(graph), true)
             console.log(serializeGraphML(graph))

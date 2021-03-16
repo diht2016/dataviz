@@ -57,15 +57,22 @@ export class Graph {
         }
     }
 
-    iterEdges(f) {
-        this.iterVertices(a => this.halfsets[a].forEach(b => f(a, b)))
+    iterEdges(f, directed = false) {
+        this.iterVertices(a => this.halfsets[a].forEach(b => {
+            if (directed) {
+                if (this.table[a][b]) f(a, b)
+                if (this.table[b][a]) f(b, a)
+            } else {
+                f(a, b)
+            }
+        }))
     }
 }
 
-export function randomTree(n = 10) {
-    let graph = new Graph(n)
-    graph.iterVertices(a => {if (a) graph.setEdge(a, rand(a))})
-    graph.description = `randomTree(n = ${n})`
+export function randomTree(n = 10, directed = false) {
+    let graph = new Graph(n, directed)
+    graph.iterVertices(a => {if (a) graph.setEdge(rand(a), a)})
+    graph.description = `randomTree(n = ${n}${directed ? ', directed = true' : ''})`
     return graph
 }
 

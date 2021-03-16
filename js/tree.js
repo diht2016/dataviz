@@ -22,29 +22,18 @@ export function graphMiddle(graph) {
     }
 }
 
-export function treeHierarchy(graph, root = null) {
-    if (root == null) {
-        root = graphMiddle(graph)[0]
-    }
-    let visited = Array(graph.n)
-    visited.fill(false)
-
-    function buildNode(u) {
-        visited[u] = true
-        let children = Array.from(graph.adjacentOf(u))
-            .filter(v => !visited[v])
-            .map(v => buildNode(v))
-        return {
-            pos: u,
-            children
-        }
-    }
-    return buildNode(root)
-}
-
 export function treeHanged(graph, radial = false, root = null) {
     if (root == null) {
-        root = graphMiddle(graph)[0]
+        if (!graph.isDirected) {
+            root = graphMiddle(graph)[0]
+        } else {
+            let invPowers = Array(graph.n)
+            invPowers.fill(0)
+            graph.sets.forEach(s => s.forEach(b => invPowers[b]++))
+            console.log(invPowers)
+            root = invPowers.indexOf(0)
+            //root = graph.sets.map(s => s.size).indexOf(0)
+        }
     }
     let visited = Array(graph.n)
     visited.fill(false)
@@ -67,6 +56,7 @@ export function treeHanged(graph, radial = false, root = null) {
     }
 
     function buildNode(u, h) {
+        console.log(u, h)
         visited[u] = true
         let children = Array.from(graph.adjacentOf(u))
             .filter(v => !visited[v])
