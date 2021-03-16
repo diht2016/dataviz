@@ -10,6 +10,14 @@ export function initSVG() {
     svg = document.createElementNS(svgNS, 'svg')
     setLimits()
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+    svg.innerHTML = [
+        '<marker id="arrow" viewBox="0 0 10 10"',
+        'refX="5" refY="5" fill="#ccc"',
+        'markerWidth="4" markerHeight="4"',
+        'orient="auto-start-reverse">',
+        '<path d="M 0 0 L 10 5 L 0 10 z" />',
+        '</marker>'
+    ].join('\n')
 
     g = createElem('g', svg)
     ge = createElem('g', g)
@@ -29,19 +37,20 @@ function createElem(tagName, parent) {
     return e
 }
 
-function setPoint(e, xy, r) {
+function setPoint(e, xy) {
     if (!e) e = createElem('circle', gv)
-    e.setAttribute('r', r)
+    e.setAttribute('r', '0.75em')
     e.setAttribute('cx', xy[0])
     e.setAttribute('cy', xy[1])
     return e
 }
 
-function setLine(e, xy0, xy1, type) {
-    if (type) {
+function setLine(e, xy0, xy1, type, directed = false) {
+    if (type || directed) {
         if (!e) e = createElem('path', ge)
         let path = `M ${xy0[0]} ${xy0[1]}`
         if (type == 'verticalCurve') {
+            // todo: split line when directed
             let yd = Math.abs(xy0[1] - xy1[1])
             let dist = 3 * Math.abs(xy0[0] - xy1[0]) + yd
             let t = yd / dist
@@ -49,6 +58,7 @@ function setLine(e, xy0, xy1, type) {
             let y1 = xy1[1] * t + xy0[1] * (1 - t)
             path += ` C ${xy0[0]} ${y0} ${xy1[0]} ${y1} ${xy1[0]} ${xy1[1]}`
         } else if (type == 'polarCurve') {
+            // todo: split line when directed
             let r0 = Math.hypot(xy0[0], xy0[1])
             let r1 = Math.hypot(xy1[0], xy1[1])
             let dist = 3 * Math.hypot(xy0[0] - xy1[0], xy0[1] - xy1[1])
@@ -57,18 +67,24 @@ function setLine(e, xy0, xy1, type) {
             let k1 = r1 == 0 ? 0 : r0 / r1 * (1 - t) + t
             path += ` C ${k0 * xy0[0]} ${k0 * xy0[1]} ${k1 * xy1[0]} ${k1 * xy1[1]} ${xy1[0]} ${xy1[1]}`
         } else {
+            if (directed) {
+                let tm = 0.65
+                let xm = xy0[0] * (1-tm) + xy1[0] * tm
+                let ym = xy0[1] * (1-tm) + xy1[1] * tm
+                path += ` L ${xm} ${ym}`
+            }
             path += ` L ${xy1[0]} ${xy1[1]}`
         }
         e.setAttribute('d', path)
-        return e
+        if (directed) e.setAttribute('marker-mid', 'url(#arrow)')
     } else {
         if (!e) e = createElem('line', ge)
         e.setAttribute('x1', xy0[0])
         e.setAttribute('x2', xy1[0])
         e.setAttribute('y1', xy0[1])
         e.setAttribute('y2', xy1[1])
-        return e
     }
+    return e
 }
 
 let defaultLimits = [0, 0, 1, 1]
@@ -99,16 +115,17 @@ export function drawGraph(graph2d) {
         }
     }
     let limScale = setLimits(graph2d.limits)
-    let scale = limScale / (graph2d.n + 15)
+    let scale = 0.125 * limScale / (graph2d.n) ** 0.625
 
     // asserting that edges didn't change
-    g.setAttribute('stroke-width', 0.2 * scale)
+    g.setAttribute('font-size', scale)
+    g.setAttribute('stroke-width', '0.2em')
     let lineType = graph2d.lineType
     let elems = ge.children
     let i = 0
     graph2d.iterEdges((a, b) => {
-        setLine(elems[i++], graph2d.coords[a], graph2d.coords[b], lineType)
-    })
+        setLine(elems[i++], graph2d.coords[a], graph2d.coords[b], lineType, graph2d.isDirected)
+    }, graph2d.isDirected)
     elems = gv.children
     i = 0
     graph2d.iterVertices(a => {
