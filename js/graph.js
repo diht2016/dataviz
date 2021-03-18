@@ -71,7 +71,9 @@ export class Graph {
 
 export function randomTree(n = 10, directed = false) {
     let graph = new Graph(n, directed)
-    graph.iterVertices(a => {if (a) graph.setEdge(rand(a), a)})
+    let g = -(Math.random() * 3.5 + 0.5)
+    let pickPre = a => Math.floor((Math.exp(g*Math.random())-1)/(Math.exp(g)-1)*a)
+    graph.iterVertices(a => {if (a) graph.setEdge(pickPre(a), a)})
     graph.description = `randomTree(n = ${n}${directed ? ', directed = true' : ''})`
     return graph
 }

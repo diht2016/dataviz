@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+  http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph id="G" edgedefault="directed">
+    <node id="n0"/>
+    <node id="n1"/>
+    <node id="n2"/>
+    <node id="n3"/>
+    <node id="n4"/>
+    <node id="n5"/>
+    <node id="n6"/>
+    <node id="n7"/>
+    <node id="n8"/>
+    <node id="n9"/>
+    <node id="n10"/>
+    <node id="n11"/>
+    <node id="n12"/>
+    <node id="n13"/>
+    <node id="n14"/>
+    <node id="n15"/>
+    <node id="n16"/>
+    <node id="n17"/>
+    <node id="n18"/>
+    <node id="n19"/>
+    <node id="n20"/>
+    <node id="n21"/>
+    <node id="n22"/>
+    <node id="n23"/>
+  </graph>
+</graphml>
