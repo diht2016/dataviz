@@ -14,30 +14,14 @@
         Click or press Enter to randomize
     </div>
     <script type="module">
-        import {Graph, pickRandomGraph} from "./js/graph.js"
-        import {initSVG, drawGraph} from "./js/svg-graph.js"
+        import {settings, initMain} from './js/main.js'
+        import {pickRandomGraph} from "./js/graph.js"
         import {scattered} from "./js/scatter.js"
 
-        let graph2d = null
+        settings.generate = pickRandomGraph
+        settings.process = scattered
 
-        function initRandom() {
-            graph2d = scattered(pickRandomGraph())
-            drawGraph(graph2d)
-        }
-
-        let svg = initSVG()
-        initRandom()
-
-        let listener = (e) => {
-            initRandom()
-            e.preventDefault()
-            e.stopPropagation()
-        }
-        window.onkeydown = (e) => {
-            if (e.code == 'Enter') listener(e)
-            //console.log(e)
-        }
-        svg.onmousedown = listener
+        initMain()
 
     </script>
 </body>
