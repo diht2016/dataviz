@@ -22,17 +22,14 @@ body > svg {
     border-radius: 0 0 1em 0;
 }
 
-input[type="text"], select {
+input[type="text"], select, button {
     background: #333;
     color: #eee;
     margin: 0.1em;
 }
 
 button {
-    background: #333;
-    color: #eee;
-    border-radius: 0.2em;
-    margin: 0.1em;
+    border-radius: 0.4em;
 }
 
 .code-input {
@@ -51,6 +48,6 @@ button {
 input[type="checkbox"]:checked + label.collapser + .collapsible {
     height: auto;
 }
-label.collapser {
+label.collapser, button {
     cursor: pointer;
 }
