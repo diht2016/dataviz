@@ -16,9 +16,10 @@
         <input type="checkbox" id="input-toggler">
         <label class="collapser" for="input-toggler">Edit functions</label>
         <div id="func-inputs" class="collapsible"></div>
+        <div id="graph-io"></div>
     </div>
     <script type="module">
-        import {settings, initMain, startUpdates} from './js/main.js'
+        import {settings, initMain, startUpdates, createIOControls} from './js/main.js'
         import {pickRandomGraph} from "./js/graph.js"
         import {initRelaxFunctions, relax} from "./js/relax.js"
         import {scatteredCircle} from "./js/scatter.js"
@@ -30,7 +31,7 @@
         initRelaxFunctions()
         initMain()
         startUpdates()
-
+        createIOControls(document.getElementById('graph-io'))
     </script>
 </body>
 </html>

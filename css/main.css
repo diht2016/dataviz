@@ -25,6 +25,14 @@ body > svg {
 input[type="text"], select {
     background: #333;
     color: #eee;
+    margin: 0.1em;
+}
+
+button {
+    background: #333;
+    color: #eee;
+    border-radius: 0.2em;
+    margin: 0.1em;
 }
 
 .code-input {

@@ -71,3 +71,18 @@ export function startUpdates(delay = 20) {
 export function stopUpdates() {
     clearInterval(tickHandle)
 }
+
+export function createIOControls(parent) {
+    let choose = document.createElement('button')
+    choose.textContent = 'Choose Graph'
+    choose.onclick = () => Files.selectGraph(setGraph)
+    parent.appendChild(choose)
+    let dlGraph = document.createElement('button')
+    dlGraph.textContent = 'Download Graph'
+    dlGraph.onclick = () => Files.downloadGraph(currGraph)
+    parent.appendChild(dlGraph)
+    let dlSvg = document.createElement('button')
+    dlSvg.textContent = 'Download SVG'
+    dlSvg.onclick = () => Files.downloadGraphSVG(currGraph, svg)
+    parent.appendChild(dlSvg)
+}
