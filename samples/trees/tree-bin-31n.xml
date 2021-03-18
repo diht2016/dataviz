@@ -35,18 +35,6 @@
     <node id="n28"/>
     <node id="n29"/>
     <node id="n30"/>
-    <node id="n31"/>
-    <node id="n32"/>
-    <node id="n33"/>
-    <node id="n34"/>
-    <node id="n35"/>
-    <node id="n36"/>
-    <node id="n37"/>
-    <node id="n38"/>
-    <node id="n39"/>
-    <node id="n40"/>
-    <node id="n41"/>
-    <node id="n42"/>
     <edge source="n0" target="n1"/>
     <edge source="n0" target="n2"/>
     <edge source="n1" target="n3"/>
@@ -77,17 +65,5 @@
     <edge source="n13" target="n28"/>
     <edge source="n14" target="n29"/>
     <edge source="n14" target="n30"/>
-    <edge source="n15" target="n31"/>
-    <edge source="n15" target="n32"/>
-    <edge source="n16" target="n33"/>
-    <edge source="n16" target="n34"/>
-    <edge source="n17" target="n35"/>
-    <edge source="n17" target="n36"/>
-    <edge source="n18" target="n37"/>
-    <edge source="n18" target="n38"/>
-    <edge source="n19" target="n39"/>
-    <edge source="n19" target="n40"/>
-    <edge source="n20" target="n41"/>
-    <edge source="n20" target="n42"/>
   </graph>
 </graphml>
