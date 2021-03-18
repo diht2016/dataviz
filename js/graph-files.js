@@ -9,7 +9,14 @@ export function selectGraph(callback) {
     selectFile(content => callback(parseGraphML(content)))
 }
 
+function getGraphName(graph) {
+    return graph.name || `graph-${graph.n}n`
+}
+
 export function downloadGraph(graph) {
-    let fileName = graph.name || 'graph'
-    downloadFile(fileName, 'application/xml', serializeGraphML(graph))
+    downloadFile(getGraphName(graph) + '.xml', 'application/xml', serializeGraphML(graph))
+}
+
+export function downloadGraphSVG(graph, svgElement) {
+    downloadFile(getGraphName(graph) + '.svg', 'image/svg+xml', svgElement.outerHTML)
 }

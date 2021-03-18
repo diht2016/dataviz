@@ -18,39 +18,18 @@
         <div id="func-inputs" class="collapsible"></div>
     </div>
     <script type="module">
-        import {Graph, pickRandomGraph} from "./js/graph.js"
-        import {initSVG, drawGraph} from "./js/svg-graph.js"
+        import {settings, initMain, startUpdates} from './js/main.js'
+        import {pickRandomGraph} from "./js/graph.js"
         import {initRelaxFunctions, relax} from "./js/relax.js"
         import {scatteredCircle} from "./js/scatter.js"
 
-        let graph2d = null
+        settings.generate = pickRandomGraph
+        settings.process = scatteredCircle
+        settings.update = relax
 
-        function initRandom() {
-            graph2d = scatteredCircle(pickRandomGraph())
-            drawGraph(graph2d)
-        }
-
-        let svg = initSVG()
         initRelaxFunctions()
-        initRandom()
-
-        let listener = (e) => {
-            initRandom()
-            e.preventDefault()
-            e.stopPropagation()
-        }
-        window.onkeydown = (e) => {
-            if (e.code == 'Enter') listener(e)
-            //console.log(e)
-        }
-        svg.onmousedown = listener
-
-        function update() {
-            relax(graph2d)
-            drawGraph(graph2d)
-        }
-
-        setInterval(update, 20)
+        initMain()
+        startUpdates()
 
     </script>
 </body>

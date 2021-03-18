@@ -26,54 +26,34 @@
         </select>
     </div>
     <script type="module">
-        import {Graph, randomTree} from "./js/graph.js"
-        import {initSVG, drawGraph} from "./js/svg-graph.js"
+        import {settings, reselectGraph, initMain} from './js/main.js'
+        import {randomTree} from "./js/graph.js"
         import {rand, clone} from "./js/shortcuts.js"
         import {treeHanged} from "./js/tree.js"
 
-        let cleanGraph = null
         let hangedGraph = null
         let radialGraph = null
         let placementSelect = document.getElementById('placement')
         let curvesSelect = document.getElementById('curves')
 
-        function drawSelected() {
+        settings.generate = () => randomTree(rand(90) + 3, true)
+
+        settings.process = (graph) => {
+            hangedGraph = treeHanged(clone(graph), false)
+            radialGraph = treeHanged(clone(graph), true)
+        }
+
+        settings.select = () => {
             let index = +placementSelect.value
             let currGraph = [hangedGraph, radialGraph][index]
             let useCurves = +curvesSelect.value
             currGraph.lineType = currGraph.lineType.replace('#', '') + '#'.repeat(!useCurves)
-            drawGraph(currGraph)
+            return currGraph
         }
 
-        function initRandom() {
-            processGraph(randomTree(rand(90) + 3, true))
-        }
-
-        function processGraph(graph) {
-            cleanGraph = graph
-            hangedGraph = treeHanged(clone(graph), false)
-            radialGraph = treeHanged(clone(graph), true)
-            //console.log(serializeGraphML(graph))
-            drawSelected()
-        }
-
-        let svg = initSVG()
-        initRandom()
-
-        let listener = (e) => {
-            initRandom()
-            e.preventDefault()
-            e.stopPropagation()
-        }
-        window.onkeydown = (e) => {
-            if (e.code == 'Enter') listener(e)
-            //console.log(e)
-        }
-        svg.onmousedown = listener
-
-        placementSelect.oninput = drawSelected
-        curvesSelect.oninput = drawSelected
-
+        initMain()
+        placementSelect.oninput = reselectGraph
+        curvesSelect.oninput = reselectGraph
     </script>
 </body>
 </html>

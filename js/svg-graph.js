@@ -8,6 +8,8 @@ let margin = 0.1
 
 export function initSVG() {
     svg = document.createElementNS(svgNS, 'svg')
+    // xmlns is needed for correct display as image when downloaded
+    svg.setAttribute('xmlns', svgNS)
     setLimits()
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
     svg.innerHTML = [
