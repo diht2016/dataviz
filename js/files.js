@@ -14,9 +14,10 @@ export function interceptFileDrops(callback, readContents = true) {
     window.ondragover = interceptEvent
 }
 
-export function selectFile(callback, readContents = true) {
+export function selectFile(callback, extMask = undefined, readContents = true) {
 	let input = document.createElement('input')
 	input.type = 'file'
+	input.accept = extMask
 	input.style.opacity = '0'
 	input.style.position = 'fixed'
 	input.style.top = '0'

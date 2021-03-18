@@ -6,7 +6,7 @@ export function interceptGraphDrops(callback) {
 }
 
 export function selectGraph(callback) {
-    selectFile(content => callback(parseGraphML(content)))
+    selectFile(content => callback(parseGraphML(content)), '.xml, application/xml')
 }
 
 function getGraphName(graph) {
