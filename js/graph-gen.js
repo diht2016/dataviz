@@ -1,7 +1,7 @@
 import {Graph} from './graph.js'
 import {rand, chance} from './shortcuts.js'
 
-export function randomTree(n = 10, directed = false) {
+export function randomTreeOld(n = 10, directed = false) {
     let graph = new Graph(n, directed)
     let g = -(Math.random() * 3.5 + 0.5)
     let pickPre = a => Math.floor((Math.exp(g*Math.random())-1)/(Math.exp(g)-1)*a)
@@ -25,4 +25,41 @@ export function pickRandomGraph() {
     } else {
         return randomTree(n)
     }
+}
+
+function addSubtree(arr, n) {
+    if (n <= 0) return arr
+    let squash = chance(0.35)
+    let subtree = randomTreeSlice(n - !squash)
+    if (squash) {
+        arr = arr.concat(subtree)
+    } else {
+        arr.push(subtree)
+    }
+    return arr
+}
+
+function randomTreeSlice(n) {
+    if (n <= 0) return []
+    if (n == 1) return [[]]
+    let pos = rand(n + 1)
+    return addSubtree(addSubtree([], pos), n - pos)
+}
+
+export function randomTree(n = 10, directed = false) {
+    let graph = new Graph(n, directed)
+
+    let i = 0
+    function visit(arr) {
+        let a = i
+        for (let sub of arr) {
+            i++
+            graph.setEdge(a, i)
+            visit(sub)
+        }
+    }
+
+    if (n > 0) visit(randomTreeSlice(n - 1))
+    graph.description = `randomTree(n = ${n})`
+    return graph
 }
