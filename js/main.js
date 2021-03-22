@@ -73,6 +73,7 @@ export function stopUpdates() {
 }
 
 export function createIOControls(parent) {
+    if (!parent) parent = document.getElementById('graph-io')
     let choose = document.createElement('button')
     choose.textContent = 'Choose Graph'
     choose.onclick = () => Files.selectGraph(setGraph)

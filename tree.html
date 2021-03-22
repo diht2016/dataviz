@@ -37,7 +37,7 @@
         let placementSelect = document.getElementById('placement')
         let curvesSelect = document.getElementById('curves')
 
-        settings.generate = () => randomTree(rand(900) + 3, true)
+        settings.generate = () => randomTree(rand(90) + 3, true)
 
         settings.process = (graph) => {
             hangedGraph = treeHanged(clone(graph), false)
@@ -55,7 +55,7 @@
         initMain()
         placementSelect.oninput = reselectGraph
         curvesSelect.oninput = reselectGraph
-        createIOControls(document.getElementById('graph-io'))
+        createIOControls()
     </script>
 </body>
 </html>

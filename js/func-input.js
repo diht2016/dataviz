@@ -1,5 +1,8 @@
 
 export function createFuncInput(name, code, description) {
+    setFunc(name, code)
+    let funcContainer = document.getElementById('func-inputs')
+    if (!funcContainer) return
     let label = document.createTextNode(description + ':')
     let input = document.createElement('input')
     input.type = 'text'
@@ -18,10 +21,8 @@ export function createFuncInput(name, code, description) {
         }
     }
 
-    let funcContainer = document.getElementById('func-inputs')
     funcContainer.appendChild(label)
     funcContainer.appendChild(input)
-    setFunc(name, code)
 }
 
 // shortcuts for eval
