@@ -6,3 +6,4 @@ Pages:
 - [Random graph scatter (test)](https://diht2016.github.io/dataviz/random)
 - [Graph relaxation animation](https://diht2016.github.io/dataviz/relax)
 - [Tree Graph visualization](https://diht2016.github.io/dataviz/tree)
+- [Part-order Graph visualization](https://diht2016.github.io/dataviz/flow)
