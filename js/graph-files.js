@@ -10,7 +10,7 @@ export function selectGraph(callback) {
 }
 
 function getGraphName(graph) {
-    return graph.name || `graph-${graph.n}n`
+    return `${graph.name}-${graph.n}n`
 }
 
 export function downloadGraph(graph) {

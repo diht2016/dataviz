@@ -9,6 +9,7 @@ export function parseGraphML(xmlText) {
         let edgeType = graphElem.getAttribute('edgedefault')
         let vertexIds = children.filter(e => e.tagName == 'node').map(e => e.id)
         let graph = new Graph(vertexIds.length, edgeType == 'directed')
+        if (graphElem.id) graph.name = graphElem.id
         children.filter(e => e.tagName == 'edge').forEach(e => {
             let a = vertexIds.indexOf(e.getAttribute('source'))
             let b = vertexIds.indexOf(e.getAttribute('target'))
@@ -31,11 +32,11 @@ export function serializeGraphML(graph) {
     }, graph.isDirected)
     let edgeType = graph.isDirected ? 'directed' : 'undirected'
     return `<?xml version="1.0" encoding="UTF-8"?>
-    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    <graphml xmlns="http://graphml.graphdrawing.org/xmlns"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
       http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-      <graph id="G" edgedefault="${edgeType}">${
+      <graph id="${graph.name}" edgedefault="${edgeType}">${
           body.map(s => '\n' + ' '.repeat(8) + s).join('')}
       </graph>
     </graphml>`.replace(/\n {4}/g, '\n').trim()

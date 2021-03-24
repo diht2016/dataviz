@@ -8,6 +8,7 @@ export function randomTreeOld(n = 10, directed = false) {
     let pickPre = a => Math.floor((Math.exp(g*Math.random())-1)/(Math.exp(g)-1)*a)
     graph.iterVertices(a => {if (a) graph.setEdge(pickPre(a), a)})
     graph.description = `randomTree(n = ${n}${directed ? ', directed = true' : ''})`
+    graph.name = 'tree'
     return graph
 }
 
@@ -15,6 +16,7 @@ export function randomGraph(n = 10, p = Math.sqrt(1/n)) {
     let graph = new Graph(n)
     graph.iterPairs((a, b) => {if (chance(p)) graph.setEdge(a, b)})
     graph.description = `randomGraph(n = ${n}, p = ${p.toFixed(3)})`
+    graph.name = 'random'
     return graph
 }
 
@@ -30,6 +32,7 @@ export function randomFlow(n = 10, transitive = false, p = Math.sqrt(1/n)) {
     })
     if (transitive) transitiveReduction(graph)
     graph.description = `randomFlow(n = ${n}, p = ${p.toFixed(3)})`
+    graph.name = 'flow'
     return graph
 }
 
@@ -77,5 +80,6 @@ export function randomTree(n = 10, directed = false) {
 
     if (n > 0) visit(randomTreeSlice(n - 1))
     graph.description = `randomTree(n = ${n})`
+    graph.name = 'tree'
     return graph
 }

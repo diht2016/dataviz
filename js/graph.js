@@ -13,6 +13,7 @@ export class Graph {
         this.isDirected = isDirected
         this.lineType = null
         this.useLineType = true
+        this.name = 'graph'
     }
 
     setEdge(a, b) {
