@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part-order Graph Visualization</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="./images/favicon.png">
+</head>
+<body>
+    <div id="overlay">
+        Click or press Enter to randomize
+        <br>
+        <span id="curr-graph-desc"></span>
+        <div id="graph-io"></div>
+    </div>
+    <script type="module">
+        import {settings, initMain, createIOControls} from './js/main.js'
+        import {randomFlow} from "./js/graph-gen.js"
+        import {rand, clone} from "./js/shortcuts.js"
+        import {flowHanged} from "./js/flow.js"
+
+        let hangedGraph = null
+
+        settings.generate = () => randomFlow(rand(90) + 3, true)
+
+        settings.process = (graph) => {
+            hangedGraph = flowHanged(graph)
+        }
+
+        initMain()
+        createIOControls()
+    </script>
+</body>
+</html>

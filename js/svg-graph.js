@@ -15,7 +15,7 @@ export function initSVG() {
     svg.innerHTML = [
         '<marker id="arrow" viewBox="0 0 10 10"',
         'refX="5" refY="5" fill="#ccc"',
-        'markerWidth="4" markerHeight="4"',
+        'markerWidth="4.5" markerHeight="4.5"',
         'orient="auto-start-reverse">',
         '<path d="M 0 0 L 10 5 L 0 10 z" />',
         '</marker>'
@@ -70,7 +70,7 @@ function setLine(e, xy0, xy1, type, directed = false) {
             path += ` C ${k0 * xy0[0]} ${k0 * xy0[1]} ${k1 * xy1[0]} ${k1 * xy1[1]} ${xy1[0]} ${xy1[1]}`
         } else {
             if (directed) {
-                let tm = 0.65
+                let tm = 0.7
                 let xm = xy0[0] * (1-tm) + xy1[0] * tm
                 let ym = xy0[1] * (1-tm) + xy1[1] * tm
                 path += ` L ${xm} ${ym}`

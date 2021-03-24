@@ -35,6 +35,26 @@ export class Graph {
         }
     }
 
+    removeEdge(a, b) {
+        if (!this.table[a][b]) return
+        this.table[a][b] = 0
+        this.sets[a].delete(b)
+        this.powers[a]--
+        if (!this.isDirected) {
+            this.table[b][a] = 0
+            this.powers[b]--
+            this.sets[b].delete(a)
+        } else {
+            this.tableUnordered[a][b] = this.table[b][a]
+            this.tableUnordered[b][a] = this.table[b][a]
+        }
+        if (a < b) {
+            this.halfsets[a].delete(b)
+        } else {
+            this.halfsets[b].delete(a)
+        }
+    }
+
     hasEdge(a, b) {
         return this.table[a][b]
     }

@@ -1,5 +1,6 @@
 import {Graph} from './graph.js'
 import {rand, chance} from './shortcuts.js'
+import {transitiveReduction} from './flow.js'
 
 export function randomTreeOld(n = 10, directed = false) {
     let graph = new Graph(n, directed)
@@ -14,6 +15,21 @@ export function randomGraph(n = 10, p = Math.sqrt(1/n)) {
     let graph = new Graph(n)
     graph.iterPairs((a, b) => {if (chance(p)) graph.setEdge(a, b)})
     graph.description = `randomGraph(n = ${n}, p = ${p.toFixed(3)})`
+    return graph
+}
+
+export function randomFlow(n = 10, transitive = false, p = Math.sqrt(1/n)) {
+    let graph = new Graph(n, true)
+    graph.iterPairs((a, b) => {
+        if (!chance(p)) return
+        if (a < b) {
+            graph.setEdge(a, b)
+        } else {
+            graph.setEdge(b, a)
+        }
+    })
+    if (transitive) transitiveReduction(graph)
+    graph.description = `randomFlow(n = ${n}, p = ${p.toFixed(3)})`
     return graph
 }
 
