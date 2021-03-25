@@ -27,12 +27,12 @@ export function relax(graph2d) {
         let centerDiff = axy.map(t => 1 - t * 2)
         let centerDist = dist2d(centerDiff)
         add(centerDiff, fCenter(centerDist) / centerDist)
-        let kConnects = fPower(graph2d.powers[a])
+        let kConnects = fPower(graph2d.sets[a].size)
         diffCoords.forEach((xy, i) => {
             let d = dists[i]
             if (!d) return
             add(xy, fCrowd(d) / d)
-            if (!graph2d.tableUnordered[a][i]) return
+            if (!graph2d.hasAnyEdge(a, i)) return
             add(xy, kConnects * fConnected(d) / d)
         })
         let deltaNorm = dist2d(nxy)
