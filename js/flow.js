@@ -2,27 +2,27 @@ export function transitiveReduction(graph) {
     graph.iterVertices(u => {
         let decay = w => {
             graph.removeEdge(u, w)
-            graph.adjacentOf(w).forEach(decay)
+            graph.sets[w].forEach(decay)
         }
-        Array.from(graph.adjacentOf(u)).forEach(v => {
+        Array.from(graph.sets[u]).forEach(v => {
             if (!graph.hasEdge(u, v)) return
-            graph.adjacentOf(v).forEach(decay)
+            graph.sets[v].forEach(decay)
         })
     })
 }
 
 function getWavesFromBFS(graph) {
-    let nParents = Array(graph.n)
-    nParents.fill(0)
-    graph.sets.forEach(s => s.forEach(b => nParents[b]++))
+    let score = Array(graph.n)
+    score.fill(0)
+    let invPowers = graph.invsets.map(s => s.size)
     let waves = []
     let currWave = []
-    nParents.forEach((n, i) => {if (n == 0) currWave.push(i)})
+    invPowers.forEach((n, i) => {if (n == 0) currWave.push(i)})
     while (currWave.length != 0) {
         let nextWave = []
         for (let u of currWave) {
-            for (let v of graph.adjacentOf(u)) {
-                if (--nParents[v] == 0) {
+            for (let v of graph.sets[u]) {
+                if (++score[v] == invPowers[v]) {
                     nextWave.push(v)
                 }
             }

@@ -4,6 +4,7 @@ export class Graph {
     constructor(n, isDirected = false) {
         this.n = n
         this.sets = range(n, _ => new Set())
+        this.invsets = isDirected ? range(n, _ => new Set()) : this.sets
         this.halfsets = range(n, _ => new Set())
         this.table = range(n, _ => range(n, 0))
 
@@ -17,9 +18,9 @@ export class Graph {
         if (this.table[a][b]) return
         this.table[a][b] = 1
         this.sets[a].add(b)
+        this.invsets[b].add(a)
         if (!this.isDirected) {
             this.table[b][a] = 1
-            this.sets[b].add(a)
         }
         if (a < b) {
             this.halfsets[a].add(b)
@@ -32,9 +33,9 @@ export class Graph {
         if (!this.table[a][b]) return
         this.table[a][b] = 0
         this.sets[a].delete(b)
+        this.invsets[b].delete(a)
         if (!this.isDirected) {
             this.table[b][a] = 0
-            this.sets[b].delete(a)
         }
         if (a < b) {
             this.halfsets[a].delete(b)
@@ -49,10 +50,6 @@ export class Graph {
 
     hasAnyEdge(a, b) {
         return this.table[a][b] || this.table[b][a]
-    }
-
-    adjacentOf(a) {
-        return this.sets[a]
     }
 
     iterPairs(f) {

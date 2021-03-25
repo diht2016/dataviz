@@ -11,7 +11,7 @@ export function graphMiddle(graph) {
     while (currWave.length != 0) {
         let nextWave = []
         for (let u of currWave) {
-            for (let v of graph.adjacentOf(u)) {
+            for (let v of graph.sets[u]) {
                 if (--powers[v] == 1) {
                     nextWave.push(v)
                 }
@@ -27,11 +27,7 @@ export function treeHanged(graph, radial = false, root = null) {
         if (!graph.isDirected) {
             root = graphMiddle(graph)[0]
         } else {
-            let invPowers = Array(graph.n)
-            invPowers.fill(0)
-            graph.sets.forEach(s => s.forEach(b => invPowers[b]++))
-            root = invPowers.indexOf(0)
-            //root = graph.sets.map(s => s.size).indexOf(0)
+            root = graph.invsets.map(s => s.size).indexOf(0)
         }
     }
     let visited = Array(graph.n)
@@ -56,7 +52,7 @@ export function treeHanged(graph, radial = false, root = null) {
 
     function buildNode(u, h) {
         visited[u] = true
-        let children = Array.from(graph.adjacentOf(u))
+        let children = Array.from(graph.sets[u])
             .filter(v => !visited[v])
             .map(v => buildNode(v, h + 1))
         
