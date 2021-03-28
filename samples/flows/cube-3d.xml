@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+  http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph id="cube-3d" edgedefault="directed">
+    <node id="n000"/>
+    <node id="n001"/>
+    <node id="n010"/>
+    <node id="n011"/>
+    <node id="n100"/>
+    <node id="n101"/>
+    <node id="n110"/>
+    <node id="n111"/>
+    <edge source="n000" target="n001"/>
+    <edge source="n000" target="n010"/>
+    <edge source="n000" target="n100"/>
+    <edge source="n001" target="n011"/>
+    <edge source="n001" target="n101"/>
+    <edge source="n010" target="n011"/>
+    <edge source="n010" target="n110"/>
+    <edge source="n100" target="n101"/>
+    <edge source="n100" target="n110"/>
+    <edge source="n011" target="n111"/>
+    <edge source="n101" target="n111"/>
+    <edge source="n110" target="n111"/>
+  </graph>
+</graphml>
