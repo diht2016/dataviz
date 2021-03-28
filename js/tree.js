@@ -22,12 +22,15 @@ export function graphMiddle(graph) {
     }
 }
 
-export function treeHanged(graph, radial = false, root = null) {
-    if (root == null) {
+export function treeHanged(graph, radial = false, roots = null) {
+    if (roots == null) {
         if (!graph.isDirected) {
-            root = graphMiddle(graph)[0]
+            roots = [graphMiddle(graph)[0]]
         } else {
-            root = graph.invsets.map(s => s.size).indexOf(0)
+            roots = []
+            graph.invsets.forEach((s, i) => {
+                if (s.size == 0) roots.push(i)
+            })
         }
     }
     let visited = Array(graph.n)
@@ -35,7 +38,7 @@ export function treeHanged(graph, radial = false, root = null) {
     // fact: in radial graphs value of globalStep does not matter at all
     let globalStep = radial ? 1 : 0.8
 
-    function mergeHulls(hull, lhull, rhull, step) {
+    function mergeTwoHulls(hull, lhull, rhull, step) {
         let dist = 0
         let depth = Math.min(lhull[0].length, rhull[0].length)
         // compute distance between subtrees
@@ -50,42 +53,31 @@ export function treeHanged(graph, radial = false, root = null) {
         return dist
     }
 
-    function buildNode(u, h) {
-        visited[u] = true
-        let children = Array.from(graph.sets[u])
-            .filter(v => !visited[v])
-            .map(v => buildNode(v, h + 1))
-        
-        if (children.length == 0) {
-            return {
-                index: u,
-                offset: 0,
-                hull: [[0], [0]],
-                children
-            }
+    function joinTrees(nodes, h) {
+        if (nodes.length == 0) {
+            return [[0], [0]]
         }
-
         // it is ok to merge everything from left to right,
         // but merge is not associative: ((Ab)C) != (A(bC))
         // if b is small enough, so it sticks to the piece
         // it is merging first, that's why it is better to
         // start from the middle, so small pieces will now
         // tend to stick to the center, not to the sides.
-        let middle = Math.floor(children.length / 2)
-        let hull = children[middle].hull
+        let middle = Math.floor(nodes.length / 2)
+        let hull = nodes[middle].hull
         let step = radial ? globalStep / (h + 1) : globalStep
         // merge all from right
         let rdist = 0
-        for (let i = middle + 1; i < children.length; i++) {
-            let r = children[i]
-            rdist = mergeHulls(hull, hull, r.hull, step)
+        for (let i = middle + 1; i < nodes.length; i++) {
+            let r = nodes[i]
+            rdist = mergeTwoHulls(hull, hull, r.hull, step)
             r.offset = rdist
         }
         // merge all from left
         let ldist = 0
         for (let i = middle - 1; i >= 0; i--) {
-            let l = children[i]
-            ldist -= mergeHulls(hull, l.hull, hull, step)
+            let l = nodes[i]
+            ldist -= mergeTwoHulls(hull, l.hull, hull, step)
             l.offset = ldist
         }
 
@@ -97,10 +89,20 @@ export function treeHanged(graph, radial = false, root = null) {
             newHalf.unshift(0)
             return newHalf
         })
-        children.forEach(c => {
+        nodes.forEach(c => {
             c.offset -= center
-            c.hull = null
+            c.hull = null // hull no longer needed
         })
+        return hull
+    }
+
+    function buildNode(u, h) {
+        visited[u] = true
+        let children = Array.from(graph.sets[u])
+            .filter(v => !visited[v])
+            .map(v => buildNode(v, h + 1))
+        
+        let hull = joinTrees(children, h)
 
         return {
             index: u,
@@ -109,10 +111,6 @@ export function treeHanged(graph, radial = false, root = null) {
             children
         }
     }
-
-    let rootNode = buildNode(root, 0)
-    graph.coords = Array(graph.n)
-    graph.limits = [0, 0, 0, 0]
 
     function computeCoords(node, x, y) {
         x += node.offset
@@ -124,7 +122,18 @@ export function treeHanged(graph, radial = false, root = null) {
         y += 1
         node.children.forEach(c => computeCoords(c, x, y))
     }
-    computeCoords(rootNode, 0, 0)
+
+    graph.coords = Array(graph.n)
+    graph.limits = [0, 0, 0, 0]
+    if (roots.length == 1) {
+        let rootNode = buildNode(roots[0], 0)
+        computeCoords(rootNode, 0, 0)
+    } else {
+        let y = radial ? 1 : 0
+        let rootNodes = roots.map(root => buildNode(root, y))
+        joinTrees(rootNodes, 0)
+        rootNodes.forEach(rootNode => computeCoords(rootNode, 0, y))
+    }
 
     graph.lineType = 'verticalCurve'
     if (radial) graph = toPolar(graph)

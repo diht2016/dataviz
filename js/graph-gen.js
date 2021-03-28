@@ -83,3 +83,25 @@ export function randomTree(n = 10, directed = false) {
     graph.name = 'tree'
     return graph
 }
+
+export function randomForest(n = 10, directed = false) {
+    let graph = new Graph(n, directed)
+
+    let i = 0
+    function visit(arr) {
+        let a = i
+        for (let sub of arr) {
+            i++
+            graph.setEdge(a, i)
+            visit(sub)
+        }
+    }
+
+    if (n > 0) randomTreeSlice(n).forEach(t => {
+        visit(t)
+        i++
+    })
+    graph.description = `randomForest(n = ${n})`
+    graph.name = 'forest'
+    return graph
+}

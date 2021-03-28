@@ -24,11 +24,17 @@
             <option value="0" selected>Hanged</option>
             <option value="1">Radial</option>
         </select>
+        <br>
+        Graph type:
+        <select id="gen-type">
+            <option value="0" selected>Tree</option>
+            <option value="1">Forest</option>
+        </select>
         <div id="graph-io"></div>
     </div>
     <script type="module">
-        import {settings, reselectGraph, initMain, createIOControls} from './js/main.js'
-        import {randomTree} from "./js/graph-gen.js"
+        import {settings, reselectGraph, initMain, createIOControls, initRandomGraph} from './js/main.js'
+        import {randomTree, randomForest} from "./js/graph-gen.js"
         import {rand, clone} from "./js/shortcuts.js"
         import {treeHanged} from "./js/tree.js"
 
@@ -36,8 +42,12 @@
         let radialGraph = null
         let placementSelect = document.getElementById('placement')
         let curvesSelect = document.getElementById('curves')
+        let genSelect = document.getElementById('gen-type')
 
-        settings.generate = () => randomTree(rand(90) + 3, true)
+        settings.generate = () => {
+            let generator = [randomTree, randomForest][genSelect.value]
+            return generator(rand(90) + 3, true)
+        }
 
         settings.process = (graph) => {
             hangedGraph = treeHanged(clone(graph), false)
@@ -55,6 +65,7 @@
         initMain()
         placementSelect.oninput = reselectGraph
         curvesSelect.oninput = reselectGraph
+        genSelect.oninput = initRandomGraph
         createIOControls()
     </script>
 </body>
