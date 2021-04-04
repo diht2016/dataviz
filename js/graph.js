@@ -12,6 +12,7 @@ export class Graph {
         this.isDirected = isDirected
         this.lineType = null
         this.name = 'graph'
+        this.nDummies = 0
     }
 
     setEdge(a, b) {
@@ -44,6 +45,17 @@ export class Graph {
         }
     }
 
+    addVertex(isDummy = true) {
+        this.n++
+        this.sets.push(new Set())
+        if (this.isDirected) this.invsets.push(new Set())
+        this.halfsets.push(new Set())
+        this.table.forEach(row => row.push(0))
+        this.table.push(range(this.n, 0))
+        if (isDummy) this.nDummies++
+        return this.n - 1
+    }
+
     hasEdge(a, b) {
         return this.table[a][b]
     }
@@ -58,8 +70,10 @@ export class Graph {
         }
     }
 
-    iterVertices(f) {
-        for (let a = 0; a < this.n; a++) f(a)
+    iterVertices(f, withDummies = true) {
+        let n = this.n
+        if (!withDummies) n -= this.nDummies
+        for (let a = 0; a < n; a++) f(a)
     }
 
     iterEdges(f, directed = false) {

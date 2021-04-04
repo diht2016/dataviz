@@ -132,7 +132,7 @@ export function drawGraph(graph2d) {
     i = 0
     graph2d.iterVertices(a => {
         setPoint(elems[i++], graph2d.coords[a], scale)
-    })
+    }, false)
 }
 
 export function clearGraph() {

@@ -13,7 +13,7 @@ export function transitiveReduction(graph) {
     })
 }
 
-function getWavesFromBFS(graph) {
+function buildLayers(graph, addDummies = true) {
     let score = Array(graph.n)
     score.fill(0)
 
@@ -69,11 +69,31 @@ function getWavesFromBFS(graph) {
         forceFix(u, true)
         waves[maxLayer[u]].push(u)
     })
+    if (addDummies) addDummyVertices(graph, waves, maxLayer)
     return waves
 }
 
-export function flowHanged(graph) {
-    let waves = getWavesFromBFS(graph)
+function addDummyVertices(graph, waves, depths) {
+    graph.iterVertices(u => {
+        let parents = Array.from(graph.invsets[u])
+        for (let v of parents) {
+            if (depths[u] - depths[v] > 1) {
+                graph.removeEdge(v, u)
+                let prev = v
+                for (let d = depths[v] + 1; d < depths[u]; d++) {
+                    let curr = graph.addVertex()
+                    graph.setEdge(prev, curr)
+                    waves[d].push(curr)
+                    prev = curr
+                }
+                graph.setEdge(prev, u)
+            }
+        }
+    }, false)
+}
+
+export function flowHanged(graph, addDummies = false) {
+    let waves = buildLayers(graph, addDummies)
     graph.coords = Array(graph.n)
 
     let width = waves.map(w => w.length).reduce((a, b) => Math.max(a, b), 0)
