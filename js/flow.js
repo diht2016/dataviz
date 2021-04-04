@@ -41,41 +41,33 @@ function getWavesFromBFS(graph) {
     let powersOut = graph.sets.map(s => s.size)
     powersOut.forEach((n, i) => {if (n == 0) limitMin(i, bottom)})
     
-    function forceFix(u, strict) {
+    function forceFix(u) {
         let min = minLayer[u]
         let max = maxLayer[u]
-        console.log(u, min, max)
         if (min == max) return
-        let uScore = powersIn[u]
-        let dScore = powersOut[u]
-        console.log(u, uScore, dScore)
-        if (dScore > uScore) {
+        let upScore = powersIn[u] - powersOut[u]
+        if (upScore < 0) {
             limitMax(u, min)
-        } else if (uScore > dScore) {
+        } else if (upScore > 0) {
             limitMin(u, max)
-        } else if (strict) {
+        } else {
             let middle = Math.floor((min + max) / 2)
             limitMax(u, middle)
             limitMin(u, middle)
-        } else return false
-        console.log(u, minLayer[u])
-        return true
+        }
     }
 
-    let added = Array(graph.n)
-    added.fill(false)
-    let waves = range(bottom + 1, () => [])
+    let priority = []
     graph.iterVertices(u => {
-        if (forceFix(u, false)) {
-            waves[maxLayer[u]].push(u)
-            added[u] = true
-        }
+        let score = -Math.abs(powersIn[u] - powersOut[u])
+        score += u * 1e-5
+        priority.push([score, u])
     })
-    graph.iterVertices(u => {
-        if (!added[u]) {
-            forceFix(u, true)
-            waves[maxLayer[u]].push(u)
-        }
+    priority.sort((a, b) => a[0] - b[0])
+    let waves = range(bottom + 1, () => [])
+    priority.map(t => t[1]).forEach(u => {
+        forceFix(u, true)
+        waves[maxLayer[u]].push(u)
     })
     return waves
 }
