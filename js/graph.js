@@ -1,16 +1,30 @@
 import {range} from './shortcuts.js'
 
 export class Graph {
-    constructor(n, isDirected = false) {
+    // constructor(nVertices, isDirected)
+    // constructor(otherGraph, deepCopy)
+    constructor(n, d = false) {
+        if (n instanceof Graph) {
+            // shallow copy
+            Object.assign(this, n)
+            if (!d) return
+            // deep copy
+            this.sets = this.sets.map(x => new Set(x))
+            this.invsets = this.isDirected ? this.invsets.map(x => new Set(x)) : this.sets
+            this.halfsets = this.halfsets.map(x => new Set(x))
+            this.table = this.table.map(x => Array.from(x))
+            return
+        }
         this.n = n
         this.sets = range(n, _ => new Set())
-        this.invsets = isDirected ? range(n, _ => new Set()) : this.sets
+        this.invsets = d ? range(n, _ => new Set()) : this.sets
         this.halfsets = range(n, _ => new Set())
         this.table = range(n, _ => range(n, 0))
 
         this.description = 'custom graph'
-        this.isDirected = isDirected
+        this.isDirected = d
         this.lineType = null
+        this.coords = null
         this.name = 'graph'
         this.nDummies = 0
     }
@@ -79,5 +93,13 @@ export class Graph {
     iterEdges(f, directed = false) {
         let sets = directed ? this.sets : this.halfsets
         this.iterVertices(a => sets[a].forEach(b => f(a, b)))
+    }
+
+    isDummy(a) {
+        return a >= this.n - this.nDummies
+    }
+
+    copy(deepCopy = true) {
+        return new Graph(this, deepCopy)
     }
 }

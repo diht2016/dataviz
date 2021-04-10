@@ -59,6 +59,18 @@ function setLine(e, xy0, xy1, type, directed = false) {
             let y0 = xy0[1] * t + xy1[1] * (1 - t)
             let y1 = xy1[1] * t + xy0[1] * (1 - t)
             path += ` C ${xy0[0]} ${y0} ${xy1[0]} ${y1} ${xy1[0]} ${xy1[1]}`
+        } else if (type == 'verticalCurveSlight') {
+            // todo: split line when directed
+            let yd = Math.abs(xy0[1] - xy1[1])
+            let dist = 0.3 * Math.abs(xy0[0] - xy1[0]) + yd
+            let t = yd / dist
+            let y0 = xy0[1] * t + xy1[1] * (1 - t)
+            let y1 = xy1[1] * t + xy0[1] * (1 - t)
+            let z = 1 - (1 - t) * 0.5
+            let x0 = xy0[0] * z + xy1[0] * (1 - z)
+            let x1 = xy1[0] * z + xy0[0] * (1 - z)
+            path += ` C ${xy0[0]} ${y0} ${xy1[0]} ${y1} ${xy1[0]} ${xy1[1]}`
+            //path += ` C ${x0} ${y0} ${x1} ${y1} ${xy1[0]} ${xy1[1]}`
         } else if (type == 'polarCurve') {
             // todo: split line when directed
             let r0 = Math.hypot(xy0[0], xy0[1])
