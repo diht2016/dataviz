@@ -2,6 +2,8 @@
 
 All algorithms are written in pure JavaScript. Graphs are drawn using SVG elements.
 
+---> [Interactive Website](https://diht2016.github.io/dataviz/)
+
 Pages:
 - [Random graph scatter (test)](https://diht2016.github.io/dataviz/random)
 - [Graph relaxation animation](https://diht2016.github.io/dataviz/relax)
