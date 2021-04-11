@@ -33,12 +33,13 @@
         }
 
         settings.select = (graph) => {
-            let width = parseInt(widthSelect.value)
+            let inputValue = widthSelect.value
+            let width = parseInt(inputValue)
             if (!width || width < 0) {
                 width = 0
                 widthSelect.value = 0
-            } else if (width && widthSelect.value.startsWith('0')) {
-                widthSelect.value = widthSelect.value.replace(/^0+/, '')
+            } else if (width.toString() != inputValue) {
+                widthSelect.value = width
             }
             if (width) return flowHanged(graph, width)
             return hangedGraph
