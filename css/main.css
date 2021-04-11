@@ -21,6 +21,20 @@ body > svg {
     background: rgba(0, 0, 0, 0.125);
     border-radius: 0 0 1em 0;
 }
+#main {
+    color: #eee;
+    margin: 0 auto;
+    width: 40em;
+    max-width: 90vw;
+    font-size: 1.3em;
+}
+a {
+    color: #6af;
+    transition: color ease-in-out 0.1s;
+}
+a:hover {
+    color: #fc0;
+}
 
 input[type="text"], select, button {
     background: #333;

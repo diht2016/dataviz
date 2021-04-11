@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Graph Test</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="./images/favicon.png">
+</head>
+<body>
+    <div id="main">
+        <h1>Data visualization algorithms</h1>
+        <p>All algorithms are written in pure JavaScript (no frameworks used!). Graphs are drawn using SVG elements.</p>
+        <p>Pages & algorithms:
+            <ul>
+                <li><a href="relax" target="blank">Graph force relaxation animation</a></li>
+                <li><a href="tree" target="blank">Tree Graph visualization</a></li>
+                <li><a href="flow" target="blank">Directed Acyclic Graph visualization</a></li>
+            </ul>
+        </p>
+        <p><a href="https://github.com/diht2016/dataviz" target="blank">View code on Github</a> (<span id="star" style="transition: transform ease 0.5s; cursor: pointer; display: inline-block; transition: rotate(0)">🌟</span> star if you like it!)</p>
+        <script>
+            let rotation = 0
+            document.getElementById('star').onclick = function() {
+                this.style.transform = `rotate(${rotation += 3}turn)`
+            }
+        </script>
+        <p><a href="https://github.com/diht2016/dataviz/tree/main/samples" target="blank">A lot of graph samples (in GraphML format)</a></p>
+    </div>
+</body>
+</html>
