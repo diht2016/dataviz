@@ -150,13 +150,42 @@ function crossMinimizer(curr, base, sets) {
     return curr
 }
 
-function minimizeEdgeCrossing(graph, lvls, minimizer, nTimes = 2) {
+function minimizeEdgeCrossing(graph, lvls, minimizer, nTimes = 5) {
     for (let i = 0; i < nTimes; i++) {
         for (let d = 1; d < lvls.length; d++) {
             lvls[d] = minimizer(lvls[d], lvls[d - 1], graph.invsets)
         }
         for (let d = lvls.length - 1; d > 0; d--) {
             lvls[d - 1] = minimizer(lvls[d - 1], lvls[d], graph.sets)
+        }
+    }
+}
+
+function inflateCorners(graph, coords, lvls) {
+    function fullCenterShift(u) {
+        let size = graph.sets[u].size + graph.invsets[u].size
+        if (size == 0) return 0
+        let x = 0
+        graph.sets[u].forEach(v => x += coords[v][0])
+        graph.invsets[u].forEach(v => x += coords[v][0])
+        return x / size - coords[u][0]
+    }
+
+    for (let lvl of lvls) {
+        // inflate left corners
+        let shift = -Infinity
+        for (let u of lvl) {
+            shift = Math.max(fullCenterShift(u), shift)
+            if (shift >= 0) break
+            coords[u][0] += shift
+        }
+        // inflate right corners
+        shift = Infinity
+        for (let i = lvl.length - 1; i >= 0; i--) {
+            let u = lvl[i]
+            shift = Math.min(fullCenterShift(u), shift)
+            if (shift <= 0) break
+            coords[u][0] += shift
         }
     }
 }
@@ -183,6 +212,8 @@ function setGraphCoords(graph, lvls) {
         yPos += 1
     }
 
+    inflateCorners(graph, coords, lvls)
+    inflateCorners(graph, coords, lvls)
     graph.coords = coords
     graph.limits = [-w2, 0, w2, lvls.length]
 }
