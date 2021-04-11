@@ -19,23 +19,32 @@ export let settings = {
 
 let currGraph = null
 
+function showErrors(f, action = 'process') {
+    try {
+        return f()
+    } catch(error) {
+        alert(`Failed to ${action} graph!\n${error}`)
+        throw error
+    }
+}
+
 export function reselectGraph() {
-    let chosenGraph = settings.select(currGraph)
+    let chosenGraph = showErrors(() => settings.select(currGraph), 'select')
     drawGraph(chosenGraph)
 }
 
 export function initRandomGraph() {
-    setGraph(settings.generate())
+    setGraph(showErrors(() => settings.generate(), 'generate'))
 }
 
 export function setGraph(graph) {
     currGraph = graph
-    settings.process(graph)
+    showErrors(() => settings.process(graph))
     reselectGraph()
 }
 
 export function update() {
-    settings.update(currGraph)
+    showErrors(() => settings.update(currGraph), 'update')
     reselectGraph()
 }
 

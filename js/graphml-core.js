@@ -1,23 +1,47 @@
 import {Graph} from './graph.js'
 
-export function parseGraphML(xmlText) {
+export function parseStringAsXML(xmlText) {
     let parser = new DOMParser()
+    let xml = parser.parseFromString(xmlText, 'text/xml')
+    if (xml.activeElement.tagName == 'parsererror') {
+        let errorNodes = xml.activeElement.childNodes
+        throw new Error(errorNodes[0].data + '\n' + errorNodes[1].textContent)
+    }
+    return xml
+}
+
+export function parseGraphML(xmlText) {
     try {
-        let xml = parser.parseFromString(xmlText, 'text/xml')
+        let xml = parseStringAsXML(xmlText)
         let graphElem = xml.getElementsByTagName('graph')[0]
+        if (!graphElem) {
+            throw new Error('<graph> element not found')
+        }
         let children = Array.from(graphElem.children)
         let edgeType = graphElem.getAttribute('edgedefault')
+
         let vertexIds = children.filter(e => e.tagName == 'node').map(e => e.id)
+        function indexById(id) {
+            let index = vertexIds.indexOf(id)
+            if (index == -1) {
+                throw new Error(`Cannot find vertex with id '${id}'`)
+            }
+            return index
+        }
+
         let graph = new Graph(vertexIds.length, edgeType == 'directed')
-        if (graphElem.id) graph.name = graphElem.id
+        if (graphElem.id) {
+            graph.name = graphElem.id
+            graph.description = graphElem.id
+        }
         children.filter(e => e.tagName == 'edge').forEach(e => {
-            let a = vertexIds.indexOf(e.getAttribute('source'))
-            let b = vertexIds.indexOf(e.getAttribute('target'))
+            let a = indexById(e.getAttribute('source'))
+            let b = indexById(e.getAttribute('target'))
             graph.setEdge(a, b)
         })
         return graph
     } catch(error) {
-        alert('Failed to parse GraphML')
+        alert('Failed to parse GraphML\n' + error)
         throw error
     }
 }
