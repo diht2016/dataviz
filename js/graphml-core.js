@@ -30,6 +30,7 @@ export function parseGraphML(xmlText) {
         }
 
         let graph = new Graph(vertexIds.length, edgeType == 'directed')
+        graph.ids = vertexIds
         if (graphElem.id) {
             graph.name = graphElem.id
             graph.description = graphElem.id
@@ -49,10 +50,10 @@ export function parseGraphML(xmlText) {
 export function serializeGraphML(graph) {
     let body = []
     graph.iterVertices(a => {
-        body.push(`<node id="n${a}"/>`)
+        body.push(`<node id="${graph.getVertexName(a)}"/>`)
     })
     graph.iterEdges((a, b) => {
-        body.push(`<edge source="n${a}" target="n${b}"/>`)
+        body.push(`<edge source="${graph.getVertexName(a)}" target="${graph.getVertexName(b)}"/>`)
     }, graph.isDirected)
     let edgeType = graph.isDirected ? 'directed' : 'undirected'
     return `<?xml version="1.0" encoding="UTF-8"?>

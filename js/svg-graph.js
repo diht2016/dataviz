@@ -39,8 +39,14 @@ function createElem(tagName, parent) {
     return e
 }
 
-function setPoint(e, xy) {
-    if (!e) e = createElem('circle', gv)
+function setPoint(e, xy, name) {
+    if (!e) {
+        e = createElem('circle', gv)
+        if (name) {
+            let title = createElem('title', e)
+            title.textContent = name
+        }
+    }
     e.setAttribute('r', '0.75em')
     e.setAttribute('cx', xy[0])
     e.setAttribute('cy', xy[1])
@@ -143,7 +149,7 @@ export function drawGraph(graph2d) {
     elems = gv.children
     i = 0
     graph2d.iterVertices(a => {
-        setPoint(elems[i++], graph2d.coords[a], scale)
+        setPoint(elems[i++], graph2d.coords[a], graph2d.getVertexName(a))
     }, false)
 }
 

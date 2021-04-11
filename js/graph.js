@@ -23,10 +23,12 @@ export class Graph {
 
         this.description = 'custom graph'
         this.isDirected = d
-        this.lineType = null
-        this.coords = null
         this.name = 'graph'
         this.nDummies = 0
+        
+        this.lineType = null
+        this.coords = null
+        this.ids = null
     }
 
     setEdge(a, b) {
@@ -97,6 +99,10 @@ export class Graph {
 
     isDummy(a) {
         return a >= this.n - this.nDummies
+    }
+
+    getVertexName(a) {
+        return this.ids ? this.ids[a] : a.toString()
     }
 
     copy(deepCopy = true) {
