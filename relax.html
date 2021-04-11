@@ -22,10 +22,10 @@
         import {settings, initMain, startUpdates, createIOControls} from './js/main.js'
         import {pickRandomGraph} from "./js/graph-gen.js"
         import {initRelaxFunctions, relax} from "./js/relax.js"
-        import {scatteredCircle} from "./js/scatter.js"
+        import {scatterCircle} from "./js/scatter.js"
 
         settings.generate = pickRandomGraph
-        settings.process = scatteredCircle
+        settings.process = scatterCircle
         settings.update = relax
 
         initRelaxFunctions()

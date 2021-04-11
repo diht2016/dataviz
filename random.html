@@ -16,10 +16,10 @@
     <script type="module">
         import {settings, initMain} from './js/main.js'
         import {pickRandomGraph} from "./js/graph-gen.js"
-        import {scattered} from "./js/scatter.js"
+        import {scatter} from "./js/scatter.js"
 
         settings.generate = pickRandomGraph
-        settings.process = scattered
+        settings.process = scatter
 
         initMain()
 
