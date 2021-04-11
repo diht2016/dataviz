@@ -12,15 +12,19 @@
         Click or press Enter to randomize
         <br>
         <span id="curr-graph-desc"></span>
+        <br>
+        Max width (0 = unlimited):
+        <input id="graph-width" type="text" value="0" style="width: 3em">
         <div id="graph-io"></div>
     </div>
     <script type="module">
-        import {settings, initMain, createIOControls} from './js/main.js'
+        import {settings, initMain, createIOControls, reselectGraph} from './js/main.js'
         import {randomFlow} from "./js/graph-gen.js"
         import {rand, clone} from "./js/shortcuts.js"
         import {flowHanged} from "./js/flow.js"
 
         let hangedGraph = null
+        let widthSelect = document.getElementById('graph-width')
 
         settings.generate = () => randomFlow(rand(50) + 3, true)
 
@@ -28,9 +32,20 @@
             hangedGraph = flowHanged(graph)
         }
 
-        settings.select = () => hangedGraph
+        settings.select = (graph) => {
+            let width = parseInt(widthSelect.value)
+            if (!width || width < 0) {
+                width = 0
+                widthSelect.value = 0
+            } else if (width && widthSelect.value.startsWith('0')) {
+                widthSelect.value = widthSelect.value.replace(/^0+/, '')
+            }
+            if (width) return flowHanged(graph, width)
+            return hangedGraph
+        }
 
         initMain()
+        widthSelect.oninput = reselectGraph
         createIOControls()
     </script>
 </body>

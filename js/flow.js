@@ -13,7 +13,7 @@ export function transitiveReduction(graph) {
     })
 }
 
-function buildLayers(graph, addDummies = true) {
+function buildLayers(graph) {
     let minLayer = range(graph.n, graph.n)
     function limitMin(u, n) {
         if (minLayer[u] <= n) return
@@ -84,12 +84,32 @@ function buildLayers(graph, addDummies = true) {
         queue = [unfinished]
         added[unfinished] = true
     }
-
-    if (addDummies) addDummyVertices(graph, lvls, maxLayer)
     return lvls
 }
 
-function addDummyVertices(graph, lvls, depths) {
+function buildLayersSimple(graph, width) {
+    let powersOut = graph.sets.map(s => s.size)
+    let lvls = []
+    let unadded = new Set(range(graph.n).reverse())
+    while (unadded.size) {
+        let lvl = []
+        for (let u of unadded) {
+            if (powersOut[u]) continue
+            lvl.push(u)
+            unadded.delete(u)
+            if (lvl.length >= width) break
+        }
+        lvl.forEach(u => {
+            graph.invsets[u].forEach(v => powersOut[v]--)
+        })
+        lvls.push(lvl)
+    }
+    return lvls.reverse()
+}
+
+function addDummyVertices(graph, lvls) {
+    let depths = new Array(graph.n)
+    lvls.forEach((lvl, y) => lvl.forEach(u => depths[u] = y))
     graph.iterVertices(u => {
         let parents = Array.from(graph.invsets[u])
         for (let v of parents) {
@@ -218,9 +238,10 @@ function setGraphCoords(graph, lvls) {
     graph.limits = [-w2, 0, w2, lvls.length]
 }
 
-export function flowHanged(graph, addDummies = true) {
+export function flowHanged(graph, width = null, addDummies = true) {
     graph = graph.copy()
-    let lvls = buildLayers(graph, addDummies)
+    let lvls = width ? buildLayersSimple(graph, width) : buildLayers(graph)
+    if (addDummies) addDummyVertices(graph, lvls)
     minimizeEdgeCrossing(graph, lvls, coordMinimizer)
     minimizeEdgeCrossing(graph, lvls, crossMinimizer)
     setGraphCoords(graph, lvls)
