@@ -22,35 +22,18 @@ class Box {
     }
 }
 
-function parseBoxes(str) {
-    return str.trim().split('\n').map(line => new Box(line))
+export function parseBoxes(str) {
+    try {
+        return str.trim().split('\n').map(line => new Box(line))
+    } catch(error) {
+        let errorMessage = 'Failed to parse data!'
+        alert(errorMessage)
+        console.log(errorMessage)
+        throw error
+    }
 }
 
-let metric = (pos1, pos2) => Math.hypot(pos1[0] - pos2[0], pos1[1] - pos2[1])
-
-function getCenter(boxes) {
-    let center = [0, 0]
-    boxes.forEach(box => box.pos.forEach((t, i) => center[i] += t))
-    center = center.map(t => t / boxes.length)
-}
-
-function sortBoxesFromFurthest(boxes) {
-    let center = getCenter(boxes)
-    let dists = boxes.map(box => metric(center, box.pos))
-    let bestIndex = 0
-    let bestScore = Infinity
-    dists.forEach((d, bi) => {
-        if (bestScore > d) {
-            bestIndex = bi
-            bestScore = d 
-        }
-    })
-    center = boxes[bestIndex].pos
-    boxes.forEach((box, bi) => box.score = metric(center, box.pos) + bi * 1e-5)
-    boxes.sort((box1, box2) => box1.score - box2.score)
-}
-
-function sortBoxesByCoords(boxes) {
+export function sortBoxesByCoords(boxes) {
     boxes.forEach((box, bi) => box.score = box.pos[0] + box.pos[1] + bi * 1e-5)
     boxes.sort((box1, box2) => box1.score - box2.score)
 }
@@ -59,7 +42,7 @@ function doRectsOverlap(r1, r2) {
     return r1[0] <= r2[2] && r2[0] <= r1[2] && r1[1] <= r2[3] && r2[1] <= r1[3]
 }
 
-function computeOverlaps(boxes) {
+export function computeOverlaps(boxes) {
     let regs = []
     boxes.forEach((box, bi) => {
         box.rids = []
@@ -77,7 +60,7 @@ function computeOverlaps(boxes) {
     })
 }
 
-class SolverState {
+export class SolverState {
     constructor(boxes) {
         this.boxes = boxes
         this.bi = 0
@@ -125,13 +108,13 @@ class SolverState {
         return this.bi == this.boxes.length
     }
 
-    finalize() {
-        if (!isSolutionFound) return
+    saveChoice() {
+        if (!this.isSolutionFound()) return
         this.boxes.forEach((box, bi) => box.chosen = this.ris[bi])
     }
 }
 
-function solveSync(boxes) {
+export function solveSync(boxes) {
     let state = new SolverState(boxes)
     while (!state.isDone) {
         state.step()
@@ -139,35 +122,8 @@ function solveSync(boxes) {
     return state
 }
 
-function printSolution(boxes, state) {
-    if (!state.isSolutionFound) {
-        console.log("No solution")
-        return
-    }
-    state.ris.forEach((ri, bi) => {
-        let box = boxes[bi]
-        console.log(box.pos, box.offsets[ri])
+export function printSolution(boxes) {
+    boxes.forEach(box => {
+        console.log(box.pos, box.offsets[box.chosen])
     })
 }
-
-function readAndSolve(text) {
-    let boxes = parseBoxes(text)
-    sortBoxesByCoords(boxes)
-    console.time('compute overlaps')
-    computeOverlaps(boxes)
-    console.timeEnd('compute overlaps')
-    console.time('solve')
-    let state = solveSync(boxes)
-    console.timeEnd('solve')
-    printSolution(boxes, state)
-}
-
-readAndSolve(`
-45,15	20,10	0,0 20,0 0,10 20,10
-50,15	20,10	0,0 20,0 0,10 20,10
-25,30	20,10	0,0 20,0 0,10 20,10
-30,20	20,10	0,0 20,0 0,10 20,10
-55,20	20,10	0,0 20,0 0,10 20,10
-40,35	20,10	0,0 20,0 0,10 20,10
-45,35	20,10	0,0 20,0 0,10 20,10
-`)

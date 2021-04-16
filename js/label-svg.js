@@ -46,7 +46,7 @@ function createPoint(xy, name) {
         let title = createElem('title', e)
         title.textContent = name
     }
-    e.setAttribute('r', '0.75em')
+    e.setAttribute('r', '0.5em')
     e.setAttribute('cx', xy[0])
     e.setAttribute('cy', xy[1])
     makeColorable(e)
@@ -67,10 +67,10 @@ function limitsOfBoxes(boxes) {
     let limits = [Infinity, Infinity, -Infinity, -Infinity]
     for (let box of boxes) {
         for (let rect of box.rects) {
-            if (limits[0] < rect[0]) limits[0] = rect[0]
-            if (limits[1] < rect[1]) limits[1] = rect[1]
-            if (limits[2] > rect[2]) limits[2] = rect[2]
-            if (limits[3] > rect[3]) limits[3] = rect[3]
+            if (limits[0] > rect[0]) limits[0] = rect[0]
+            if (limits[1] > rect[1]) limits[1] = rect[1]
+            if (limits[2] < rect[2]) limits[2] = rect[2]
+            if (limits[3] < rect[3]) limits[3] = rect[3]
         }
     }
     return limits
@@ -78,8 +78,8 @@ function limitsOfBoxes(boxes) {
 
 export function setLabelRects(boxes) {
     clearElems()
-    let limScale = adjustViewBox(svg, limitsOfBoxes(boxes))
-    let scale = 0.125 * limScale
+    adjustViewBox(svg, limitsOfBoxes(boxes))
+    let scale = 1.5 // 0.125 * limScale
 
     g.setAttribute('font-size', scale)
     g.setAttribute('stroke-width', '0.2em')
