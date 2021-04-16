@@ -1,4 +1,4 @@
-import {initSVG, drawGraph} from "./svg-graph.js"
+import {initSVG, drawGraph} from "./graph-svg.js"
 import * as Files from "./graph-files.js"
 
 export let settings = {

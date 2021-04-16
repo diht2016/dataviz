@@ -1,17 +1,12 @@
-const svgNS = 'http://www.w3.org/2000/svg'
+import {createSVGRoot, createElem, adjustViewBox} from "./svg-core.js"
+
 let svg = null
 let g = null
 let gv = null
 let ge = null
 
-let margin = 0.1
-
 export function initSVG() {
-    svg = document.createElementNS(svgNS, 'svg')
-    // xmlns is needed for correct display as image when downloaded
-    svg.setAttribute('xmlns', svgNS)
-    setLimits()
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+    svg = createSVGRoot()
     svg.innerHTML = [
         '<marker id="arrow" viewBox="0 0 10 10"',
         'refX="5" refY="5" fill="#ccc"',
@@ -31,12 +26,6 @@ export function initSVG() {
 
     document.body.appendChild(svg)
     return svg
-}
-
-function createElem(tagName, parent) {
-    let e = document.createElementNS(svgNS, tagName)
-    if (parent) parent.appendChild(e)
-    return e
 }
 
 function setPoint(e, xy, name) {
@@ -107,19 +96,6 @@ function setLine(e, xy0, xy1, type, directed = false) {
     return e
 }
 
-let defaultLimits = [0, 0, 1, 1]
-
-function setLimits(limits) {
-    if (!limits) limits = defaultLimits
-    let w = limits[2] - limits[0]
-    let h = limits[3] - limits[1]
-    let xm = margin * Math.max(w, 0.5)
-    let ym = margin * Math.max(h, 0.5)
-    let view = [limits[0]-xm, limits[1]-ym, w+2*xm, h+2*ym]
-    svg.setAttribute('viewBox', view.join(' '))
-    return (w + h + 2 * (xm + ym)) / 2
-}
-
 let currentGraph = null
 
 export function drawGraph(graph2d) {
@@ -134,7 +110,7 @@ export function drawGraph(graph2d) {
             graphDescElem.textContent = graph2d.description
         }
     }
-    let limScale = setLimits(graph2d.limits)
+    let limScale = adjustViewBox(svg, graph2d.limits)
     let scale = 0.125 * limScale / (graph2d.n) ** 0.625
 
     // asserting that edges didn't change
