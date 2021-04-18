@@ -1,5 +1,5 @@
 import {initSVG, setLabelRects} from "./label-svg.js"
-import {parseBoxes, sortBoxesByCoords, computeOverlaps, solveSync, solutionAsText} from "./label-placement.js"
+import {parseBoxes, sortBoxesByCoords, computeOverlaps, solveSync, solutionAsText, generatePlacement} from "./label-placement.js"
 import {interceptFileDrops, selectFile} from './files.js'
 
 export function initMain() {
@@ -15,7 +15,12 @@ function readAndSolve(text) {
     computeOverlaps(boxes)
     console.timeEnd('compute overlaps')
     setLabelRects(boxes)
+    solve(boxes)
+}
+
+function solve(boxes) {
     console.time('solve')
+    //let state = await solveAsync(boxes)
     let state = solveSync(boxes)
     console.timeEnd('solve')
     if (!state.isSolutionFound()) {
@@ -47,4 +52,10 @@ export function processSample(sampleName) {
 
 export function selectFileAndProcess() {
     selectFile(readAndSolve, '.txt, text/plain')
+}
+
+export function processRandom() {
+    let data = generatePlacement()
+    console.log(data)
+    readAndSolve(data)
 }

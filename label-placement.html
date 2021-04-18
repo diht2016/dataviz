@@ -19,11 +19,14 @@
             <option>test4.txt</option>
             <option>test16.txt</option>
         </select>
+        <br>
+        <button id="random-gen">Generate random</button>
     </div>
     <script type="module">
-        import {initMain, processSample, selectFileAndProcess} from './js/label-main.js'
+        import {initMain, processSample, selectFileAndProcess, processRandom} from './js/label-main.js'
 
         let fileSelect = document.getElementById('select-file')
+        let genButton = document.getElementById('random-gen')
 
         export function selectSource() {
             let sampleName = fileSelect.value
@@ -36,6 +39,7 @@
 
         initMain()
         fileSelect.oninput = selectSource
+        genButton.onclick = processRandom
         selectSource()
     </script>
 </body>
