@@ -9,14 +9,34 @@
 </head>
 <body>
     <div id="overlay">
-        <!--<span id="curr-graph-desc"></span>
-        <br>
-        Click or press Enter to randomize-->
         Drag and drop label-placement file
+        <br>
+        or select:
+        <select id="select-file">
+            <option value="">Open custom file...</option>
+            <option selected>bricks.txt</option>
+            <option>frame.txt</option>
+            <option>test4.txt</option>
+            <option>test16.txt</option>
+        </select>
     </div>
     <script type="module">
-        import {initMain} from './js/label-main.js'
+        import {initMain, processSample, selectFileAndProcess} from './js/label-main.js'
+
+        let fileSelect = document.getElementById('select-file')
+
+        export function selectSource() {
+            let sampleName = fileSelect.value
+            if (sampleName) {
+                processSample(sampleName)
+            } else {
+                selectFileAndProcess()
+            }
+        }
+
         initMain()
+        fileSelect.oninput = selectSource
+        selectSource()
     </script>
 </body>
 </html>

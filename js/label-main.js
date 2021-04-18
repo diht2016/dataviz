@@ -1,24 +1,11 @@
 import {initSVG, setLabelRects} from "./label-svg.js"
-import {parseBoxes, sortBoxesByCoords, computeOverlaps, solveSync, printSolution} from "./label-placement.js"
+import {parseBoxes, sortBoxesByCoords, computeOverlaps, solveSync, solutionAsText} from "./label-placement.js"
 import {interceptFileDrops, selectFile} from './files.js'
-
-let data = `
-45,15	20,10	0,0 20,0 0,10 20,10
-50,15	20,10	0,0 20,0 0,10 20,10
-25,30	20,10	0,0 20,0 0,10 20,10
-30,20	20,10	0,0 20,0 0,10 20,10
-55,20	20,10	0,0 20,0 0,10 20,10
-40,35	20,10	0,0 20,0 0,10 20,10
-45,35	20,10	0,0 20,0 0,10 20,10
-`
 
 export function initMain() {
     initSVG()
 
     interceptFileDrops(readAndSolve)
-    selectFile(readAndSolve, '.txt, text/plain') // no controls yet
-
-    readAndSolve(data)
 }
 
 function readAndSolve(text) {
@@ -37,7 +24,7 @@ function readAndSolve(text) {
         return
     }
     state.saveChoice()
-    printSolution(boxes)
+    console.log(solutionAsText(boxes))
     drawSolution(boxes)
 }
 
@@ -51,4 +38,13 @@ function drawSolution(boxes) {
             }
         })
     })
+}
+
+export function processSample(sampleName) {
+    fetch('/samples/label-placement/' + sampleName)
+        .then(res => res.text().then(readAndSolve))
+}
+
+export function selectFileAndProcess() {
+    selectFile(readAndSolve, '.txt, text/plain')
 }

@@ -42,6 +42,11 @@ function doRectsOverlap(r1, r2) {
     return r1[0] <= r2[2] && r2[0] <= r1[2] && r1[1] <= r2[3] && r2[1] <= r1[3]
 }
 
+// How to improve:
+// - exclude rects which overlap foreign dots, they will always fail
+// - exclude rects which overlap all of the rects of specific box
+// - if after exclusion there is a box with 0 rects, then there's no solution
+
 export function computeOverlaps(boxes) {
     let regs = []
     boxes.forEach((box, bi) => {
@@ -122,8 +127,11 @@ export function solveSync(boxes) {
     return state
 }
 
-export function printSolution(boxes) {
+export function solutionAsText(boxes) {
+    let lines = []
     boxes.forEach(box => {
-        console.log(box.pos, box.offsets[box.chosen])
+        lines.push(box.pos + '\t' + box.offsets[box.chosen])
     })
+    lines.sort()
+    return lines.join('\n')
 }
