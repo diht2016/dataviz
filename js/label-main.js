@@ -46,7 +46,7 @@ function drawSolution(boxes) {
 }
 
 export function processSample(sampleName) {
-    fetch('/samples/label-placement/' + sampleName)
+    fetch('./samples/label-placement/' + sampleName)
         .then(res => res.text().then(readAndSolve))
 }
 
